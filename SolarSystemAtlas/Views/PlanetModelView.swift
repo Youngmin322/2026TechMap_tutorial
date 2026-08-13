@@ -11,6 +11,8 @@ import RealityKitContent
 
 struct PlanetModelView: View {
     let planet: Planet
+    var size: Double = 90
+    var spinAngle: Angle = .zero
 
     var body: some View {
         Model3D(
@@ -35,7 +37,8 @@ struct PlanetModelView: View {
                     .accessibilityLabel("\(planet.name) 불러오는 중")
             }
         }
-        .frame(width: 90, height: 90)
-        .frame(depth: 90)
+        .frame(width: size, height: size)
+        .frame(depth: size)
+        .rotation3DEffect(spinAngle, axis: .y)
     }
 }
