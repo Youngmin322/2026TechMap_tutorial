@@ -39,6 +39,6 @@ struct PlanetModelView: View {
         }
         .frame(width: size, height: size)
         .frame(depth: size)
-        .rotation3DEffect(spinAngle, axis: .y)
+        .rotation3DLayout(spinAngle, axis: .y)
     }
 }

@@ -17,6 +17,7 @@ struct Planet: Identifiable, Hashable {
     let orbitRadius: Double
     let orbitDuration: Double
     let rotationDuration: Double
+    let rotationDirection: Double
     
     // SwiftUI의 ForEach가 각 행성을 안정적으로 구분할 때 사용하는 고유 값
     // assetName은 RealityKit asset 이름이면서 행성마다 중복되지 않으므로 id로 사용
@@ -30,7 +31,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 42,
             orbitRadius: 92,
             orbitDuration: 8,
-            rotationDuration: 2.8
+            rotationDuration: 2.8,
+            rotationDirection: 1
         ),
         Planet(
             name: "금성",
@@ -39,7 +41,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 48,
             orbitRadius: 130,
             orbitDuration: 12,
-            rotationDuration: 4.2
+            rotationDuration: 4.2,
+            rotationDirection: -1
         ),
         Planet(
             name: "지구",
@@ -48,7 +51,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 50,
             orbitRadius: 168,
             orbitDuration: 16,
-            rotationDuration: 3
+            rotationDuration: 3,
+            rotationDirection: 1
         ),
         Planet(
             name: "화성",
@@ -57,7 +61,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 46,
             orbitRadius: 206,
             orbitDuration: 22,
-            rotationDuration: 3.2
+            rotationDuration: 3.2,
+            rotationDirection: 1
         ),
         Planet(
             name: "목성",
@@ -66,7 +71,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 74,
             orbitRadius: 252,
             orbitDuration: 32,
-            rotationDuration: 2.2
+            rotationDuration: 2.2,
+            rotationDirection: 1
         ),
         Planet(
             name: "토성",
@@ -75,7 +81,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 72,
             orbitRadius: 296,
             orbitDuration: 42,
-            rotationDuration: 2.5
+            rotationDuration: 2.5,
+            rotationDirection: 1
         ),
         Planet(
             name: "천왕성",
@@ -84,7 +91,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 58,
             orbitRadius: 336,
             orbitDuration: 54,
-            rotationDuration: 3.8
+            rotationDuration: 3.8,
+            rotationDirection: -1
         ),
         Planet(
             name: "해왕성",
@@ -93,7 +101,8 @@ struct Planet: Identifiable, Hashable {
             displaySize: 58,
             orbitRadius: 374,
             orbitDuration: 66,
-            rotationDuration: 4
+            rotationDuration: 4,
+            rotationDirection: 1
         )
     ]
 }
