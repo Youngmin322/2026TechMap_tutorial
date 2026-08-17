@@ -9,19 +9,40 @@ import SwiftUI
 
 struct PlanetInfoCard: View {
     let planet: Planet
+    var onDismiss: (() -> Void)? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 10) {
+            if let onDismiss {
+                HStack {
+                    Text("태양계 도감")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Spacer()
+
+                    Button(action: onDismiss) {
+                        Image(systemName: "xmark")
+                            .font(.caption.bold())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("도감 닫기")
+                }
+            }
+
             Text(planet.name)
-                .font(.headline)
+                .font(onDismiss == nil ? .headline : .title2.bold())
 
             Text(planet.summary)
-                .font(.caption)
+                .font(onDismiss == nil ? .caption : .body)
                 .foregroundStyle(.secondary)
-                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(12)
-        .frame(width: 150, alignment: .leading)
+        .padding(onDismiss == nil ? 12 : 18)
+        .frame(
+            width: onDismiss == nil ? 150 : 240,
+            alignment: .leading
+        )
         .glassBackgroundEffect()
     }
 }

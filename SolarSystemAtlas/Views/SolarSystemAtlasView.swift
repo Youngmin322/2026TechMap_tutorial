@@ -17,6 +17,7 @@ struct SolarSystemAtlasView: View {
     private let tabletopTilt: Float = .pi / 10
 
     @State private var animationStartDate = Date()
+    @State private var selectedPlanet: Planet?
 
     var body: some View {
         TimelineView(.animation) { timeline in
@@ -25,48 +26,74 @@ struct SolarSystemAtlasView: View {
                 timeline.date.timeIntervalSince(animationStartDate)
             )
 
-            RealityView { content, attachments in
-                let root = Entity()
-                root.name = EntityName.root
-                content.add(root)
+            ZStack(alignment: .trailing) {
+                RealityView { content, attachments in
+                    let root = Entity()
+                    root.name = EntityName.root
+                    content.add(root)
 
-                addOrbitPlate(to: root)
-                await addSun(to: root)
+                    addOrbitPlate(to: root)
+                    await addSun(to: root)
 
-                for (index, planet) in Planet.starter.enumerated() {
-                    await addPlanet(
-                        planet,
-                        index: index,
-                        to: root,
-                        attachments: attachments
-                    )
-                }
-            } update: { content, _ in
-                guard let root = content.entities.first(where: {
-                    $0.name == EntityName.root
-                }) else {
-                    return
-                }
-
-                updateSun(in: root, elapsedTime: elapsedTime)
-
-                for (index, planet) in Planet.starter.enumerated() {
-                    update(
-                        planet,
-                        index: index,
-                        in: root,
-                        elapsedTime: elapsedTime
-                    )
-                }
-            } attachments: {
-                ForEach(Planet.starter) { planet in
-                    Attachment(id: planet.id) {
-                        Text(planet.name)
-                            .font(.caption2)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .glassBackgroundEffect()
+                    for (index, planet) in Planet.starter.enumerated() {
+                        await addPlanet(
+                            planet,
+                            index: index,
+                            to: root,
+                            attachments: attachments
+                        )
                     }
+                } update: { content, _ in
+                    guard let root = content.entities.first(where: {
+                        $0.name == EntityName.root
+                    }) else {
+                        return
+                    }
+
+                    updateSun(in: root, elapsedTime: elapsedTime)
+
+                    for (index, planet) in Planet.starter.enumerated() {
+                        update(
+                            planet,
+                            index: index,
+                            in: root,
+                            elapsedTime: elapsedTime,
+                            isSelected: selectedPlanet?.id == planet.id
+                        )
+                    }
+                } attachments: {
+                    ForEach(Planet.starter) { planet in
+                        Attachment(id: planet.id) {
+                            Text(planet.name)
+                                .font(.caption2)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .glassBackgroundEffect()
+                        }
+                    }
+                }
+                .gesture(
+                    SpatialTapGesture()
+                        .targetedToAnyEntity()
+                        .onEnded { value in
+                            guard let planet = planet(for: value.entity) else {
+                                return
+                            }
+
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                selectedPlanet = planet
+                            }
+                        }
+                )
+
+                if let selectedPlanet {
+                    PlanetInfoCard(planet: selectedPlanet) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            self.selectedPlanet = nil
+                        }
+                    }
+                    .padding(28)
+                    .transition(.opacity.combined(with: .move(edge: .trailing)))
                 }
             }
         }
@@ -121,6 +148,13 @@ struct SolarSystemAtlasView: View {
         let startAngle = Float(Double(index) * .pi / 4)
 
         model.name = EntityName.model(planet)
+        model.components.set(InputTargetComponent())
+        model.components.set(
+            CollisionComponent(
+                shapes: [.generateSphere(radius: diameter / 2)]
+            )
+        )
+        model.components.set(HoverEffectComponent())
         model.position = planetPosition(
             radius: radius,
             diameter: diameter,
@@ -153,7 +187,8 @@ struct SolarSystemAtlasView: View {
         _ planet: Planet,
         index: Int,
         in root: Entity,
-        elapsedTime: TimeInterval
+        elapsedTime: TimeInterval,
+        isSelected: Bool
     ) {
         let orbitProgress = cycleProgress(
             elapsedTime,
@@ -178,6 +213,7 @@ struct SolarSystemAtlasView: View {
                 angle: angle
             )
             model.orientation = rotation(radians: Float(spinAngle))
+            model.scale = SIMD3(repeating: isSelected ? 1.18 : 1)
         }
 
         root.findEntity(named: EntityName.label(planet))?.position = labelPosition(
@@ -291,6 +327,22 @@ struct SolarSystemAtlasView: View {
 
     private func rotation(radians: Float) -> simd_quatf {
         simd_quatf(angle: radians, axis: SIMD3(0, 1, 0))
+    }
+
+    private func planet(for entity: Entity) -> Planet? {
+        var candidate: Entity? = entity
+
+        while let current = candidate {
+            if let planet = Planet.starter.first(where: {
+                EntityName.model($0) == current.name
+            }) {
+                return planet
+            }
+
+            candidate = current.parent
+        }
+
+        return nil
     }
 }
 
