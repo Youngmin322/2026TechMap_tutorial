@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">SolarSystemAtlas 튜토리얼 표지 자리표시자</title>
+  <desc id="desc">어두운 우주 배경 위에 태양과 네 개의 행성이 배치된 자리표시자 그림</desc>
+  <defs><radialGradient id="sun"><stop stop-color="#fff8b0"/><stop offset="1" stop-color="#ff9f1c"/></radialGradient><linearGradient id="space" x2="1" y2="1"><stop stop-color="#111b40"/><stop offset="1" stop-color="#050816"/></linearGradient></defs>
+  <rect width="1200" height="675" fill="url(#space)"/>
+  <g fill="#fff" opacity=".65"><circle cx="91" cy="84" r="2"/><circle cx="1067" cy="91" r="3"/><circle cx="1030" cy="566" r="2"/><circle cx="174" cy="593" r="2"/><circle cx="822" cy="110" r="2"/></g>
+  <g fill="none" stroke="#9bb8ff" stroke-opacity=".35" stroke-width="2"><ellipse cx="555" cy="346" rx="188" ry="84"/><ellipse cx="555" cy="346" rx="318" ry="148"/><ellipse cx="555" cy="346" rx="452" ry="214"/></g>
+  <circle cx="555" cy="346" r="74" fill="url(#sun)"/><circle cx="368" cy="300" r="24" fill="#bdb9a8"/><circle cx="736" cy="262" r="36" fill="#4787d6"/><circle cx="915" cy="462" r="49" fill="#c6754e"/>
+  <text x="72" y="105" fill="white" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="42" font-weight="700">SolarSystemAtlas</text>
+  <text x="75" y="148" fill="#bed0ff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24">TODO: 실제 앱 스크린샷으로 교체</text>
+</svg>

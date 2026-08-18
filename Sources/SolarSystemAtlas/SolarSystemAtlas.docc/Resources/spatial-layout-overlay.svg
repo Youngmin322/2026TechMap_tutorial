@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">공간 오버레이 자리표시자</title><desc id="desc">행성의 아래 앞쪽에 정보 카드가 표시된 그림</desc>
+  <rect width="1200" height="675" fill="#0b1228"/>
+  <circle cx="500" cy="313" r="136" fill="#518bcf"/><path d="M383 272c100-91 232-48 251 75" fill="none" stroke="#bfe0ff" stroke-width="17" opacity=".55"/>
+  <rect x="570" y="395" width="390" height="168" rx="28" fill="#eff6ff" fill-opacity=".91"/>
+  <text x="610" y="452" fill="#172448" font-family="-apple-system, sans-serif" font-size="34" font-weight="700">지구</text>
+  <text x="610" y="496" fill="#33446e" font-family="-apple-system, sans-serif" font-size="23">액체 상태의 바다가 있는 행성</text>
+  <path d="M545 396l43 33-46 23" fill="#d8e6ff"/>
+  <text x="72" y="105" fill="white" font-family="-apple-system, sans-serif" font-size="42" font-weight="700">spatialOverlay</text>
+  <text x="75" y="148" fill="#bed0ff" font-family="-apple-system, sans-serif" font-size="24">TODO: 실제 행성 정보 카드 화면으로 교체</text>
+</svg>

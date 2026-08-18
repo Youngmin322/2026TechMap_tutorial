@@ -1,0 +1,37 @@
+@Tutorials(name: "SolarSystemAtlas") {
+    @Intro(title: "SwiftUI로 만드는 3D 태양계 도감") {
+        WWDC25 「SwiftUI 공간 레이아웃 만나보기」 세션에서 소개한 Spatial Layout API를 직접 적용해 봅니다.
+
+        평면적인 목록에서 출발해 태양과 행성을 깊이감 있게 배치하고, 회전 애니메이션과 선택 가능한 정보 카드를 더해 나갑니다. SwiftUI는 익숙하지만 visionOS와 공간 컴퓨팅은 처음인 독자를 위한 실습입니다.
+
+        <!-- TODO: 실제 앱의 대표 화면 캡처로 교체하세요. -->
+        @Image(source: "spatial-layout-cover.svg", alt: "태양을 중심으로 행성이 깊이 방향으로 배치된 SolarSystemAtlas의 자리표시자 일러스트레이션")
+    }
+
+    @Chapter(name: "Spatial Layout 기초 다지기") {
+        앱의 폴더 구조를 살펴보고, `depthAlignment`가 왜 3D 배치의 기준점이 되는지 이해합니다. 이어서 태양과 행성을 깊이 축까지 고려해 배치합니다.
+
+        <!-- TODO: 깊이 정렬 전후를 보여 주는 실제 스크린샷으로 교체하세요. -->
+        @Image(source: "spatial-layout-depth.svg", alt: "깊이 축을 따라 앞과 뒤에 놓인 태양계 모델의 자리표시자 일러스트레이션")
+
+        @TutorialReference(tutorial: "doc:01-SpatialLayoutBasics")
+    }
+
+    @Chapter(name: "태양계 움직이기") {
+        행성 데이터에서 공전과 자전에 필요한 값을 꺼내고, `rotation3DLayout`이 레이아웃까지 고려하는 회전을 어떻게 만드는지 실습합니다.
+
+        <!-- TODO: 회전 중인 행성을 보여 주는 실제 스크린샷으로 교체하세요. -->
+        @Image(source: "spatial-layout-rotation.svg", alt: "원형 궤도를 따라 회전하는 행성의 자리표시자 일러스트레이션")
+
+        @TutorialReference(tutorial: "doc:02-PlanetRotation")
+    }
+
+    @Chapter(name: "행성 정보 인터랙션 만들기") {
+        `SpatialContainer`와 `spatialOverlay`를 이용해 선택한 행성 가까이에 정보 카드를 띄우고, 배치·움직임·입력을 하나의 경험으로 연결합니다.
+
+        <!-- TODO: 선택된 행성과 정보 카드를 보여 주는 실제 스크린샷으로 교체하세요. -->
+        @Image(source: "spatial-layout-overlay.svg", alt: "선택된 행성 앞에 정보 카드가 떠 있는 자리표시자 일러스트레이션")
+
+        @TutorialReference(tutorial: "doc:03-PlanetInfoOverlay")
+    }
+}

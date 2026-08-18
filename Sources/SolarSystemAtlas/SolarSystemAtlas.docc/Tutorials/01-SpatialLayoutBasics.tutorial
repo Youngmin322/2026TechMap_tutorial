@@ -1,0 +1,70 @@
+@Tutorial(time: 20) {
+    @Intro(title: "깊이 축을 가진 태양계의 첫 장면") {
+        태양계는 행성의 순서만 나열해도 이해할 수 있지만, 모두가 같은 평면에 있으면 궤도와 거리의 감각이 사라집니다. 이 튜토리얼에서는 앱의 구조를 먼저 확인하고, SwiftUI 레이아웃에 깊이 축을 추가하는 방법을 배웁니다.
+
+        <!-- TODO: 기본 배치가 완성된 앱 화면 캡처로 교체하세요. -->
+        @Image(source: "spatial-layout-depth.svg", alt: "가운데 태양과 깊이 방향으로 분리된 행성이 있는 자리표시자 일러스트레이션")
+    }
+
+    @Section(title: "프로젝트의 지도를 읽기") {
+        @ContentAndMedia {
+            먼저 코드가 어느 역할을 맡는지 파악합니다. 완성 앱에서는 `SolarSystemAtlasApp.swift`가 볼륨 윈도우를 열고, `ContentView.swift`가 시작 화면을 연결합니다. `Views/`에는 태양계 장면과 행성 카드처럼 화면을 그리는 코드가, `Models/Planet.swift`에는 이름·에셋·궤도 값이 들어갑니다. `Packages/RealityKitContent/`는 USDZ 행성 모델을 보관하는 Swift 패키지입니다.
+
+            이 문서 카탈로그의 `Tutorials/Resources/`는 독자가 단계별로 비교할 코드 스냅샷을 둡니다. 앱 소스와 별개이므로, 예제를 읽다가 실제 프로젝트의 파일을 잃어버릴 걱정 없이 변화만 살펴볼 수 있습니다.
+
+            <!-- TODO: Xcode 프로젝트 내비게이터 캡처로 교체하세요. -->
+            @Image(source: "spatial-layout-cover.svg", alt: "앱 소스, 모델, RealityKitContent, DocC 리소스의 관계를 나타낸 자리표시자 일러스트레이션")
+        }
+
+        @Steps {
+            @Step {
+                Xcode에서 `SolarSystemAtlas.xcodeproj`를 열고 `SolarSystemAtlasApp.swift`, `ContentView.swift`, `Views/SolarSystemAtlasView.swift`, `Models/Planet.swift` 순서로 훑어봅니다.
+
+                앱 진입점과 데이터 모델을 먼저 분리해서 보면, 레이아웃 코드를 수정할 때 어떤 값이 화면을 바꾸는지 빠르게 찾을 수 있습니다. 특히 `Planet` 모델의 `assetName`은 RealityKitContent의 USDZ 파일명과 연결되어야 합니다.
+
+                @Code(name: "SolarSystemAtlasApp.swift", file: "s1-start.swift", reset: true)
+            }
+
+            @Step {
+                `RealityKitContent.rkassets`에 태양과 행성 USDZ 파일이 있는지 확인하고, 예제의 `Planet.assetName`과 이름을 맞춥니다.
+
+                이 단계가 필요한 이유는 Spatial Layout이 **모델을 배치하는 방식**을 바꾸더라도, 어떤 3D 에셋을 표시할지 결정하는 책임은 데이터 모델에 남아 있기 때문입니다. 에셋 이름이 맞지 않으면 `Model3D`는 공간을 만들기 전에 로드에 실패합니다.
+            }
+        }
+    }
+
+    @Section(title: "깊이를 레이아웃의 일부로 만들기") {
+        @ContentAndMedia {
+            일반적인 `HStack`은 가로와 세로만 맞춥니다. visionOS의 3D 콘텐츠에서는 같은 행에 있어도 어떤 뷰가 앞인지, 뒤인지가 중요합니다. `HStackLayout().depthAlignment(.center)`는 자식 뷰의 깊이 가이드를 하나의 기준면에 정렬하게 만들어, SwiftUI가 깊이까지 포함한 레이아웃을 계산하도록 합니다.
+
+            그 위에서 각 행성에 `offset(z:)`를 적용하면 행성마다 앞뒤 위치를 줄 수 있습니다. 즉 `depthAlignment`는 **공통 기준면**, `offset(z:)`는 **그 기준면에서의 개별 거리**를 담당합니다. 둘을 함께 사용하면 뷰가 겹쳐도 우연한 그리기 순서에 기대지 않는 3D 배치가 됩니다.
+
+            <!-- TODO: depthAlignment 전후 비교 이미지로 교체하세요. -->
+            @Image(source: "spatial-layout-depth.svg", alt: "동일한 가로 레이아웃에서 행성이 서로 다른 깊이에 놓인 자리표시자 일러스트레이션")
+        }
+
+        @Steps {
+            @Step {
+                태양계 뷰에 `HStackLayout`을 만들고 `.depthAlignment(.center)`를 적용합니다. `HStack`이 아니라 `HStackLayout`을 쓰는 이유는 `depthAlignment`가 레이아웃 컨테이너의 깊이 가이드를 설정하는 API이기 때문입니다.
+
+                이제 행성은 같은 높이에서 출발하지만, 3D 레이아웃 시스템은 각 뷰의 깊이 프레임도 함께 관리합니다.
+
+                @Code(name: "SolarSystemLayout.swift", file: "s2-core-feature.swift", previousFile: "s1-start.swift")
+            }
+
+            @Step {
+                각 `Planet`에 `depth` 값을 추가하고, 모델 뷰에 `.offset(z: planet.depth)`를 적용합니다. 가까운 행성에는 양수, 먼 행성에는 음수를 사용해 보세요.
+
+                숫자 자체보다 중요한 것은 기준입니다. 예제에서는 포인트 단위를 사용하므로, 처음에는 `-80...80` 정도의 작은 범위로 시작해 볼륨 안에서 모델이 잘리지 않는지 확인합니다. 실제 앱의 모델 크기와 창 깊이에 맞춰 이 값을 조정하면 됩니다.
+            }
+        }
+    }
+
+    @Section(title: "여기까지 확인하기") {
+        @Steps {
+            @Step {
+                태양과 행성이 표시되고, 행성들이 서로 다른 깊이에 있다는 인상이 나면 성공입니다. 아직 궤도는 정지해 있어도 괜찮습니다. 다음 튜토리얼에서는 이 배치를 유지한 채 시간에 따라 회전시키며, `rotation3DLayout`이 필요한 이유를 살펴봅니다.
+            }
+        }
+    }
+}
