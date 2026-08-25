@@ -4,7 +4,7 @@ set -euo pipefail
 PROJECT="SolarSystemAtlas.xcodeproj"
 SCHEME="SolarSystemAtlas"
 CATALOG_PATH="SolarSystemAtlas90MinuteTutorial.docc"
-DISPLAY_NAME="SolarSystemAtlas 90분 워크숍"
+DISPLAY_NAME="visionOS로 만드는 3D 태양계 도감"
 BUNDLE_IDENTIFIER="co.kr.youngmin.SolarSystemAtlas.ninety-minute.documentation"
 HOSTING_BASE_PATH="${HOSTING_BASE_PATH:-2026TechMap_tutorial}"
 OUTPUT_DIR="${OUTPUT_DIR:-docs}"
@@ -55,7 +55,7 @@ printf '%s\n' \
   '  <meta charset="utf-8">' \
   '  <meta name="viewport" content="width=device-width, initial-scale=1">' \
   "  <meta http-equiv=\"refresh\" content=\"0; url=$TUTORIAL_HOME\">" \
-  '  <title>SolarSystemAtlas 90분 워크숍</title>' \
+  '  <title>visionOS로 만드는 3D 태양계 도감</title>' \
   '</head>' \
   "<body><a href=\"$TUTORIAL_HOME\">튜토리얼 열기</a></body>" \
   '</html>' > "$OUTPUT_DIR/404.html"
@@ -66,7 +66,7 @@ printf '%s\n' \
   '<head>' \
   '  <meta charset="utf-8">' \
   '  <meta http-equiv="refresh" content="0; url=./tutorials/solarsystematlas">' \
-  '  <title>SolarSystemAtlas 90분 워크숍</title>' \
+  '  <title>visionOS로 만드는 3D 태양계 도감</title>' \
   '</head>' \
   '<body><a href="./tutorials/solarsystematlas">튜토리얼 열기</a></body>' \
   '</html>' > "$OUTPUT_DIR/index.html"

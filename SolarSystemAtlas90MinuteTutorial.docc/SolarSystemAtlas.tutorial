@@ -1,5 +1,5 @@
-@Tutorials(name: "SolarSystemAtlas 90분 워크숍") {
-    @Intro(title: "세 번의 실습으로 완성하는 visionOS 태양계 도감") {
+@Tutorials(name: "visionOS로 만드는 3D 태양계 도감") {
+    @Intro(title: "visionOS로 만드는 3D 태양계 도감") {
         제공된 3D 에셋에서 시작해 데이터, RealityKit 장면, 애니메이션, 공간 입력, SwiftUI 카드를 순서대로 연결합니다. 각 코드 활동은 무엇을 입력하는지와 그 코드가 필요한 이유를 함께 설명합니다.
 
         @Image(source: "spatial-layout-cover.svg", alt: "태양과 여덟 행성이 공전하는 SolarSystemAtlas 완성 장면")

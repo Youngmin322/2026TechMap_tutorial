@@ -1,4 +1,4 @@
-# SolarSystemAtlas 90분 워크숍
+# visionOS로 만드는 3D 태양계 도감
 
 세 번의 30분 세션을 따라 하며 실제 SolarSystemAtlas 프로젝트의 핵심 기능을 완성합니다.
 
