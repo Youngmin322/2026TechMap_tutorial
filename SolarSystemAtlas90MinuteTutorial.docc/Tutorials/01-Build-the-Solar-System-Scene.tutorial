@@ -1,0 +1,121 @@
+@Tutorial(time: 30) {
+    @Intro(title: "세션 1: 태양과 여덟 행성을 공간에 배치하기") {
+        프로젝트와 에셋의 연결을 확인하고, 행성 데이터를 작성하고, 서로 크기가 다른 3D 모델을 정규화해 정적인 태양계 장면을 만듭니다.
+
+        @Image(source: "realityview-architecture.svg", alt: "행성 데이터와 3D 에셋이 RealityView의 엔티티 장면으로 합쳐지는 구조")
+    }
+
+    @Section(title: "0–5분: 시작 프로젝트와 에셋 확인하기") {
+        @ContentAndMedia {
+            이 워크숍은 저장소에 포함된 `SolarSystemAtlas.xcodeproj`와 `Packages/RealityKitContent`를 사용합니다. 3D 모델 제작은 실습 범위에 포함하지 않지만, 코드와 에셋 이름의 연결은 직접 확인합니다.
+
+            @Image(source: "realityview-architecture.svg", alt: "앱 타깃과 RealityKitContent 패키지의 연결")
+        }
+
+        @Steps {
+            @Step {
+                Xcode에서 `SolarSystemAtlas.xcodeproj`를 열고 실행 대상을 visionOS Simulator로 선택합니다. 프로젝트 탐색기에서 `Packages > RealityKitContent`가 보이는지 확인합니다.
+
+                패키지가 보이지 않으면 코드를 작성하기 전에 프로젝트의 Package Dependencies에서 `RealityKitContent` 연결을 복구해야 합니다.
+            }
+
+            @Step {
+                Reality Composer Pro 프로젝트를 열어 `Sun`, `Mercury`, `Venus`, `Earth`, `Mars`, `Jupiter`, `Saturn`, `Uranus`, `Neptune` 아홉 에셋의 이름을 확인합니다.
+
+                대소문자까지 일치해야 `Entity(named:in:)`가 모델을 찾을 수 있습니다. 이름이 다르면 에셋을 바꾸거나 다음 단계의 `assetName` 값을 실제 이름에 맞추세요.
+            }
+
+            @Step {
+                앱 타깃 안에 `Models`와 `Views` 그룹을 만듭니다. 이후 `Planet.swift`는 Models에, 화면 파일은 Views에 추가하고 파일 생성 창에서 SolarSystemAtlas 타깃이 선택되어 있는지 확인합니다.
+            }
+        }
+    }
+
+    @Section(title: "5–15분: 볼륨 윈도우와 행성 데이터 만들기") {
+        @ContentAndMedia {
+            창 크기와 행성 데이터를 먼저 고정하면 RealityKit 코드는 같은 규칙으로 모든 행성을 만들 수 있습니다. `Planet`은 화면과 에셋 사이의 계약 역할을 합니다.
+
+            @Image(source: "spatial-layout-depth.svg", alt: "볼륨 윈도우 안에서 태양과 행성이 차지하는 깊이")
+        }
+
+        @Steps {
+            @Step {
+                `SolarSystemAtlasApp.swift`를 열어 볼륨 윈도우와 기본 크기를 설정합니다. 제공된 프로젝트의 `AppModel`과 `ImmersiveSpace` 코드는 그대로 둡니다.
+
+                @Code(name: "SolarSystemAtlasApp.swift", file: "Checkpoint-SolarSystemAtlasApp.swift", reset: true)
+
+                `.windowStyle(.volumetric)`은 창에 깊이를 부여합니다. 0.9m의 가로와 깊이는 가장 바깥쪽 궤도까지 담기 위한 작업 공간입니다.
+            }
+
+            @Step {
+                Models 그룹에 `Planet.swift`를 만들고 여덟 행성의 표시 크기, 궤도 반지름, 공전·자전 주기를 입력합니다.
+
+                @Code(name: "Planet.swift", file: "Checkpoint-Planet.swift", reset: true)
+
+                `Identifiable`은 다음 세션의 `ForEach` attachment가 행성을 구별할 때 사용합니다. `Hashable`은 선택 상태를 비교할 수 있게 합니다. `assetName`은 에셋 이름이면서 안정적인 ID입니다.
+            }
+        }
+    }
+
+    @Section(title: "15–30분: 정적인 태양계 장면 구성하기") {
+        @ContentAndMedia {
+            `RealityView`의 생성 클로저에서는 엔티티를 한 번 만듭니다. 원본 USDZ의 크기와 피벗이 서로 다르므로 시각적 경계를 측정해 앱이 정한 지름과 중심으로 바꿉니다.
+
+            @Image(source: "spatial-layout-rotation.svg", alt: "서로 다른 원본 모델을 공통 중심과 표시 크기로 맞추는 과정")
+        }
+
+        @Steps {
+            @Step {
+                Views 그룹에 `SolarSystemAtlasView.swift`를 만들고 RealityView와 루트 엔티티를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "03-RealityView-Root.swift", reset: true)
+
+                모든 모델을 루트 아래에 두면 다음 세션의 update 클로저가 장면 전체를 한 번에 찾을 수 있습니다.
+            }
+
+            @Step {
+                구조체 안에 포인트를 미터로 바꾸는 비율과 모델을 정규화하는 `fittedModel`을 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift — 단위 변환", file: "03-Point-To-Meter.swift")
+
+                @Code(name: "SolarSystemAtlasView.swift — 모델 정규화", file: "03-Fitted-Model.swift")
+
+                `visualBounds`의 가장 큰 축이 목표 지름이 되도록 배율을 계산합니다. 원본 모델은 빈 컨테이너에 넣어 컨테이너 중심을 새 피벗으로 사용합니다.
+            }
+
+            @Step {
+                `addSun`, `planetPosition`, `addPlanet`을 구조체 안에 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift — 태양", file: "03-Add-Sun.swift")
+
+                @Code(name: "SolarSystemAtlasView.swift — 궤도 위치", file: "04-Planet-Position.swift")
+
+                @Code(name: "SolarSystemAtlasView.swift — 행성", file: "03-Add-Planet.swift")
+
+                `cos`와 `sin`은 원 위의 x·z 좌표를 만듭니다. 궤도를 살짝 기울인 y 좌표 덕분에 앞뒤 행성이 같은 높이에 겹치지 않습니다.
+            }
+
+            @Step {
+                루트를 추가한 다음 `await addSun(to: root)`를 호출하고, 그 아래에서 행성 배열을 순회합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift — 여덟 행성 생성", file: "03-Add-All-Planets.swift")
+
+                비동기 모델 로딩이 끝난 엔티티부터 루트에 추가됩니다. 한 에셋이 실패하더라도 `try?`를 사용한 함수가 나머지 장면 생성을 계속합니다.
+            }
+
+            @Step {
+                `ContentView.swift`가 새 RealityKit 장면을 표시하도록 바꾸고 세션 1 체크포인트와 파일 전체를 비교합니다.
+
+                @Code(name: "ContentView.swift", file: "Checkpoint-ContentView.swift", reset: true)
+
+                @Code(name: "SolarSystemAtlasView.swift — 세션 1 체크포인트", file: "90-Session1-Checkpoint.swift")
+            }
+
+            @Step {
+                앱을 실행합니다. 태양과 여덟 행성이 서로 다른 원형 시작 위치에 정지해 있으면 세션 1을 완료한 것입니다.
+
+                모델 하나만 보이지 않으면 `assetName`을, 모든 모델이 보이지 않으면 `RealityKitContent` 타깃 연결과 import를 먼저 확인하세요.
+            }
+        }
+    }
+}

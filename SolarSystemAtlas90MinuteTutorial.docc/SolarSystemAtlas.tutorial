@@ -1,0 +1,31 @@
+@Tutorials(name: "SolarSystemAtlas 90분 워크숍") {
+    @Intro(title: "세 번의 실습으로 완성하는 visionOS 태양계 도감") {
+        제공된 3D 에셋에서 시작해 데이터, RealityKit 장면, 애니메이션, 공간 입력, SwiftUI 카드를 순서대로 연결합니다. 각 코드 활동은 무엇을 입력하는지와 그 코드가 필요한 이유를 함께 설명합니다.
+
+        @Image(source: "spatial-layout-cover.svg", alt: "태양과 여덟 행성이 공전하는 SolarSystemAtlas 완성 장면")
+    }
+
+    @Chapter(name: "세션 1 · 정적인 태양계") {
+        프로젝트와 에셋을 확인하고 태양과 여덟 행성을 볼륨 윈도우에 배치합니다. 예상 시간은 30분입니다.
+
+        @Image(source: "realityview-architecture.svg", alt: "Planet 데이터와 RealityKitContent가 RealityView 장면으로 연결되는 구조")
+
+        @TutorialReference(tutorial: "doc:01-Build-the-Solar-System-Scene")
+    }
+
+    @Chapter(name: "세션 2 · 궤도와 애니메이션") {
+        궤도선을 만들고 행성별 공전·자전과 이름 레이블을 갱신합니다. 예상 시간은 30분입니다.
+
+        @Image(source: "animation-data-flow.svg", alt: "시간이 행성의 공전 위치와 자전 각도로 변환되는 흐름")
+
+        @TutorialReference(tutorial: "doc:02-Animate-Orbits-and-Labels")
+    }
+
+    @Chapter(name: "세션 3 · 상호작용하는 도감") {
+        행성 선택과 정보 카드, 전환 효과와 접근성을 추가해 앱을 완성합니다. 예상 시간은 30분입니다.
+
+        @Image(source: "interaction-flow.svg", alt: "행성 탭이 선택 상태와 정보 카드로 이어지는 흐름")
+
+        @TutorialReference(tutorial: "doc:03-Add-Selection-and-Info-Card")
+    }
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">행성 선택 상호작용 흐름</title>
+  <desc id="desc">공간 탭에서 엔티티와 행성을 찾고 선택 상태를 갱신해 모델 강조와 정보 카드를 표시하는 순서</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101a3a"/><stop offset="1" stop-color="#061022"/></linearGradient><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#90b2ff"/></marker></defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <text x="68" y="92" fill="white" font-family="-apple-system, sans-serif" font-size="40" font-weight="700">선택 상태는 하나의 경로로 흐릅니다</text>
+  <g font-family="-apple-system, sans-serif">
+    <g><circle cx="160" cy="327" r="86" fill="#477fc3"/><text x="160" y="319" text-anchor="middle" fill="white" font-size="24" font-weight="700">행성 탭</text><text x="160" y="350" text-anchor="middle" fill="#e4f0ff" font-size="18">SpatialTapGesture</text></g>
+    <g><rect x="340" y="245" width="220" height="164" rx="26" fill="#29477f"/><text x="450" y="294" text-anchor="middle" fill="white" font-size="24" font-weight="700">엔티티 찾기</text><text x="450" y="333" text-anchor="middle" fill="#d7e3ff" font-size="19">자식 → 부모</text><text x="450" y="365" text-anchor="middle" fill="#d7e3ff" font-size="19">이름 → Planet</text></g>
+    <g><rect x="650" y="245" width="220" height="164" rx="26" fill="#59428d"/><text x="760" y="305" text-anchor="middle" fill="white" font-size="24" font-weight="700">selectedPlanet</text><text x="760" y="348" text-anchor="middle" fill="#eee3ff" font-size="19">하나의 선택 상태</text></g>
+    <g><rect x="965" y="190" width="170" height="105" rx="22" fill="#376c67"/><text x="1050" y="234" text-anchor="middle" fill="white" font-size="22" font-weight="700">모델 강조</text><text x="1050" y="266" text-anchor="middle" fill="#dbfff9" font-size="18">scale 1.18</text></g>
+    <g><rect x="965" y="365" width="170" height="105" rx="22" fill="#8a5b3f"/><text x="1050" y="409" text-anchor="middle" fill="white" font-size="22" font-weight="700">정보 카드</text><text x="1050" y="441" text-anchor="middle" fill="#fff0df" font-size="18">이름 · 설명</text></g>
+  </g>
+  <g fill="none" stroke="#90b2ff" stroke-width="4" marker-end="url(#a)"><path d="M246 327H325"/><path d="M560 327H635"/><path d="M870 300C918 300 912 244 950 244"/><path d="M870 354C918 354 912 418 950 418"/></g>
+  <text x="600" y="560" text-anchor="middle" fill="#b9c9f5" font-family="-apple-system, sans-serif" font-size="21">닫기 동작은 selectedPlanet을 nil로 되돌립니다</text>
+</svg>
