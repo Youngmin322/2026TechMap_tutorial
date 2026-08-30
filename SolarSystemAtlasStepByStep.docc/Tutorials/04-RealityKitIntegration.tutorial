@@ -1,0 +1,103 @@
+@Tutorial(time: 35) {
+    @Intro(title: "Spatial Layout 예제를 RealityKit 장면으로 확장하기") {
+        앞의 세 튜토리얼에서 만든 데이터와 선택 흐름을 실제 SolarSystemAtlas 앱의 `RealityView` 구조로 옮깁니다. 서로 다른 USDZ의 크기를 맞추고, 시간에 따라 엔티티를 갱신하며, 행성 레이블과 공간 탭 입력을 연결합니다.
+
+        @Image(source: "realityview-architecture.svg", alt: "Planet 데이터와 RealityKitContent 에셋이 RealityView 장면과 SwiftUI 정보 카드로 이어지는 구조도")
+    }
+
+    @Section(title: "엔티티의 이름과 크기 통일하기") {
+        @ContentAndMedia {
+            RealityKitContent의 USDZ는 각자 원본 크기와 피벗이 다를 수 있습니다. 원본 엔티티의 `visualBounds`를 구하고 가장 큰 축이 목표 지름이 되도록 배율을 계산하세요. 모델 중심을 빈 컨테이너의 원점으로 옮기면 이후 위치와 회전을 앱이 정한 기준에서 적용할 수 있습니다.
+
+            앱은 엔티티 이름도 규칙으로 관리합니다. `model-Earth`처럼 `Planet.id`에서 이름을 만들면 탭 결과가 어떤 행성인지 되찾을 수 있고, update 클로저에서 같은 엔티티를 안정적으로 찾을 수 있습니다.
+
+            @Image(source: "realityview-architecture.svg", alt: "Planet 데이터와 USDZ 에셋이 이름이 붙은 RealityKit 엔티티로 합쳐지는 구조도")
+        }
+
+        @Steps {
+            @Step {
+                `Entity(named:in:)`로 USDZ를 비동기 로드하고 `visualBounds`의 가장 큰 축을 구합니다. 0으로 나누지 않도록 크기가 0일 때는 배율 1을 사용합니다.
+
+                @Code(name: "EntitySetup.swift", file: "04-fit-normalized.swift", previousFile: "04-fit-start.swift")
+            }
+
+            @Step {
+                원본 모델을 빈 컨테이너에 넣고, 컨테이너에 앱 고유 이름을 붙입니다. 입력 가능한 행성에는 `InputTargetComponent`, 구형 `CollisionComponent`, `HoverEffectComponent`를 추가합니다.
+
+                충돌 구는 시각 모델의 세부 메시보다 단순하지만 작은 행성을 안정적으로 선택하기 좋습니다. 목표 지름의 절반을 반지름으로 사용해 보세요.
+
+                @Code(name: "PlanetEntity.swift", file: "04-entity-input.swift", previousFile: "04-entity-named.swift")
+            }
+        }
+    }
+
+    @Section(title: "장면 생성과 프레임 갱신 나누기") {
+        @ContentAndMedia {
+            `RealityView`의 생성 클로저에서는 루트, 궤도, 태양, 행성을 한 번만 추가합니다. update 클로저에서는 기존 엔티티의 위치와 방향만 바꿉니다. 이 경계를 지키면 프레임마다 USDZ를 다시 읽거나 같은 엔티티가 중복되는 일을 피할 수 있습니다.
+
+            공전과 자전은 `TimelineView(.animation)`의 시각에서 계산합니다. 경과 시간을 각 주기로 나눈 나머지를 0에서 1 사이 진행률로 바꾸고, `2π`를 곱해 라디안 각도를 만듭니다.
+
+            @Image(source: "animation-data-flow.svg", alt: "현재 시각과 행성 주기가 진행률과 각도를 거쳐 장면 위치와 방향을 만드는 흐름도")
+        }
+
+        @Steps {
+            @Step {
+                애니메이션 시작 시각을 `@State`에 보관하고, 매 프레임 경과 시간을 계산합니다. `RealityView` update 클로저에서 루트 엔티티를 찾아 모든 행성의 현재 상태를 반영합니다.
+
+                @Code(name: "SolarSystemScene.swift", file: "04-scene-update.swift", previousFile: "04-scene-create.swift")
+            }
+
+            @Step {
+                공전 위치는 `cos`와 `sin`으로 계산합니다. 볼륨에서 깊이 변화가 잘 보이도록 궤도판을 기울이고, 같은 계산을 레이블 attachment에도 적용합니다.
+
+                공전 주기와 자전 주기는 반드시 0보다 커야 합니다. 앱의 값은 실제 천문 비율이 아니라 제한된 볼륨에서 차이를 관찰하기 위한 학습용 비율입니다.
+
+                @Code(name: "OrbitPosition.swift", file: "04-position-tilted.swift", previousFile: "04-position-flat.swift")
+            }
+        }
+    }
+
+    @Section(title: "공간 탭과 SwiftUI 정보 연결하기") {
+        @ContentAndMedia {
+            `SpatialTapGesture().targetedToAnyEntity()`가 돌려주는 엔티티는 USDZ 내부의 자식일 수 있습니다. 현재 엔티티부터 부모를 따라가며 앱이 붙인 이름을 찾고, 그 이름과 일치하는 `Planet`을 선택 상태에 저장합니다.
+
+            짧은 행성 이름은 RealityView attachment로 장면 안에 배치하고, 긴 설명 카드는 바깥 `ZStack`에 둡니다. 레이블은 행성을 따라 움직이고, 정보 카드는 사용자를 향한 안정적인 방향을 유지합니다.
+
+            @Image(source: "interaction-flow.svg", alt: "공간 탭이 엔티티와 Planet을 찾아 선택 상태, 모델 강조, 정보 카드로 이어지는 흐름도")
+        }
+
+        @Steps {
+            @Step {
+                모든 행성의 레이블 attachment를 만들고 `planet.id`를 attachment ID로 사용합니다. 엔티티를 만들 때 같은 ID로 attachment를 찾아 이름을 붙인 뒤 루트에 추가합니다.
+
+                @Code(name: "PlanetLabels.swift", file: "04-attachment-labels.swift", previousFile: "04-attachment-start.swift")
+            }
+
+            @Step {
+                공간 탭 결과를 `planet(for:)`에 전달해 선택 상태를 바꿉니다. 선택한 모델은 약간 키우고, `PlanetInfoCard`에는 닫기 동작을 전달해 상태를 `nil`로 되돌립니다.
+
+                모델 확대만으로 선택을 표현하지 마세요. 정보 카드의 행성 이름이 함께 바뀌어야 시각적 크기 차이를 알아보기 어려운 사용자도 현재 선택을 확인할 수 있습니다.
+
+                @Code(name: "PlanetSelection.swift", file: "04-tap-selection.swift", previousFile: "04-tap-start.swift")
+            }
+        }
+    }
+
+    @Section(title: "완성 장면 검증하기") {
+        @Steps {
+            @Step {
+                시뮬레이터 또는 기기에서 여덟 행성과 태양이 모두 보이는지 확인합니다. 행성마다 공전·자전 속도가 다르고, 이름 레이블이 행성 위를 따라 움직여야 합니다.
+
+                @Image(source: "visionos-simulator-result.png", alt: "Apple Vision Pro 시뮬레이터의 공간 안에 태양과 행성 궤도가 표시된 SolarSystemAtlas 실행 결과")
+            }
+
+            @Step {
+                가장 작은 수성과 가장 큰 목성을 각각 탭해 봅니다. hover 반응, 선택 확대, 정보 카드 표시, 닫기 동작이 모두 동작하면 입력 경로가 완성된 것입니다.
+            }
+
+            @Step {
+                모델 누락, 탭 실패, 레이블 어긋남이 있다면 <doc:Testing-and-Troubleshooting>의 증상별 확인 지점을 따라가세요. 전체 구현의 함수별 책임은 <doc:RealityKit-Scene-Guide>에서 다시 볼 수 있습니다.
+            }
+        }
+    }
+}

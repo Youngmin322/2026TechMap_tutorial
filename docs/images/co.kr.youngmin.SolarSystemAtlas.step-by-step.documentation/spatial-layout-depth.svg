@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">깊이 정렬 개념도</title><desc id="desc">앞, 가운데, 뒤 깊이 축에 행성이 배치된 그림</desc>
+  <rect width="1200" height="675" fill="#071124"/>
+  <g stroke="#5d82cb" stroke-width="2" opacity=".65"><path d="M180 514H1010"/><path d="M300 430H890"/><path d="M430 346H760"/></g>
+  <g fill="#b5caff" font-family="-apple-system, sans-serif" font-size="23"><text x="190" y="548">뒤 (back)</text><text x="495" y="464">중앙 (center)</text><text x="805" y="380">앞 (front)</text></g>
+  <circle cx="338" cy="430" r="46" fill="#6f9ee3"/><circle cx="602" cy="346" r="64" fill="#ffb347"/><circle cx="860" cy="262" r="39" fill="#d17467"/>
+  <text x="72" y="105" fill="white" font-family="-apple-system, sans-serif" font-size="42" font-weight="700">depthAlignment</text>
+  <text x="75" y="148" fill="#bed0ff" font-family="-apple-system, sans-serif" font-size="24">하나의 기준면, 서로 다른 z 위치</text>
+</svg>

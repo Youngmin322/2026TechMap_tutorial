@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">3D 회전 개념도</title><desc id="desc">태양 주위를 공전하면서 자전하는 행성의 그림</desc>
+  <rect width="1200" height="675" fill="#0a1029"/>
+  <ellipse cx="600" cy="355" rx="360" ry="155" fill="none" stroke="#8baeff" stroke-width="4" stroke-dasharray="12 12" opacity=".6"/>
+  <circle cx="600" cy="355" r="67" fill="#ffad36"/><circle cx="884" cy="287" r="47" fill="#4b8edb"/>
+  <path d="M875 219c78 19 102 98 53 153" fill="none" stroke="#d8e6ff" stroke-width="8" stroke-linecap="round"/><path d="M936 357l-10 18-15-13" fill="#d8e6ff"/>
+  <path d="M281 360c44-154 181-240 315-241" fill="none" stroke="#f9ce72" stroke-width="7" stroke-linecap="round"/><path d="M566 106l30 14-23 23" fill="#f9ce72"/>
+  <text x="72" y="105" fill="white" font-family="-apple-system, sans-serif" font-size="42" font-weight="700">rotation3DLayout</text>
+  <text x="75" y="148" fill="#bed0ff" font-family="-apple-system, sans-serif" font-size="24">시간으로 계산하는 자전과 공전</text>
+</svg>
