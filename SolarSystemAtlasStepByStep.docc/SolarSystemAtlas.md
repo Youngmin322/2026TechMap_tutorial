@@ -24,10 +24,10 @@ SolarSystemAtlas는 볼륨 윈도우 안에서 태양과 여덟 행성을 보여
 
 - Xcode 26 이상과 visionOS 26 SDK
 - visionOS Simulator 또는 Apple Vision Pro
-- `Packages/RealityKitContent` 패키지 안의 태양·행성 USDZ 에셋
+- [튜토리얼 저장소 ZIP](https://github.com/Youngmin322/2026TechMap_tutorial/archive/refs/heads/main.zip)에 포함된 태양·행성 USDZ 에셋
 - 볼륨 윈도우에서 모델이 잘리지 않을 만큼 충분한 기본 크기
 
-처음이라면 <doc:01-SpatialLayoutBasics>의 프로젝트 준비 단계부터 시작하세요. Xcode 그룹과 Swift 파일을 직접 만든 뒤 USDZ 연결을 확인하고 첫 장면을 실행합니다. 파일별 책임을 먼저 비교하고 싶다면 <doc:Project-Architecture>를 함께 참고하세요. 이미 앱 구조를 이해하고 있다면 <doc:04-RealityKitIntegration>으로 이동해 완성 장면을 살펴볼 수 있습니다.
+처음이라면 <doc:01-SpatialLayoutBasics>의 프로젝트 준비 단계부터 시작하세요. Xcode 폴더와 Swift 파일을 직접 만든 뒤 USDZ 연결을 확인하고 첫 장면을 실행합니다. 파일별 책임을 먼저 비교하고 싶다면 <doc:Project-Architecture>를 함께 참고하세요. 이미 앱 구조를 이해하고 있다면 <doc:04-RealityKitIntegration>으로 이동해 완성 장면을 살펴볼 수 있습니다.
 
 ## Topics
 
