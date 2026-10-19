@@ -17,7 +17,7 @@
 | 완성 장면 | `Views/SolarSystemAtlasView.swift` (완성 앱), `Views/SolarSystemScene.swift` (Chapter 4) | 엔티티를 만들고 위치·회전·선택 상태를 매 프레임 반영합니다. |
 | 표시 UI | `PlanetInfoCard.swift`, RealityView attachments | 행성 레이블과 선택한 행성의 설명을 SwiftUI로 표시합니다. |
 
-처음 실습할 때는 앱 그룹의 루트에 `SolarSystemAtlasApp.swift`와 `ContentView.swift`를 두고, `Models` 그룹에는 `Planet.swift`, `Views` 그룹에는 `PlanetModelView.swift`와 `SolarSystemView.swift`를 만듭니다. 파일 생성 창의 **Add to targets**에서 `SolarSystemAtlas`가 선택되어 있어야 앱이 코드를 컴파일합니다.
+처음 실습할 때는 앱 폴더의 루트에 `SolarSystemAtlasApp.swift`와 `ContentView.swift`를 두고, `Models` 폴더에는 `Planet.swift`, `Views` 폴더에는 `PlanetModelView.swift`와 `SolarSystemView.swift`를 만듭니다. 파일 생성 창의 **Add to targets**에서 `SolarSystemAtlas`가 선택되어 있어야 앱이 코드를 컴파일합니다.
 
 3D 파일은 `Packages/RealityKitContent/Sources/RealityKitContent/RealityKitContent.rkassets`에 있습니다. `Planet.assetName`과 USDZ 파일의 기본 이름이 같아야 `Entity(named:in:)`과 `Model3D`가 에셋을 찾을 수 있습니다.
 
