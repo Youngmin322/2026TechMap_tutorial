@@ -4,13 +4,15 @@
 
         평면적인 목록에서 출발해 태양과 행성을 깊이감 있게 배치하고, 회전 애니메이션과 선택 가능한 정보 카드를 더해 나갑니다. SwiftUI는 익숙하지만 visionOS와 공간 컴퓨팅은 처음인 독자를 위한 실습입니다.
 
+        **제작 환경:** macOS 27 · Xcode 27 · visionOS 27
+
         @Image(source: "spatial-layout-cover.svg", alt: "태양을 중심으로 여러 행성이 깊이감 있게 배치된 SolarSystemAtlas 개념도")
 
         완성 앱의 구조와 파일별 역할을 먼저 보고 싶다면 <doc:SolarSystemAtlas>를 확인하세요.
     }
 
     @Chapter(name: "Spatial Layout 기초 다지기") {
-        Xcode 프로젝트의 그룹과 Swift 파일을 준비하고 USDZ 이름을 코드와 연결합니다. 이어서 `depthAlignment`가 왜 3D 배치의 기준점이 되는지 이해하고 태양과 행성을 깊이 축까지 고려해 배치합니다.
+        Xcode 프로젝트의 그룹과 Swift 파일을 준비하고 USDZ 이름을 코드와 연결합니다. 이어서 z축의 방향과 이동 단위를 익히고, `depthAlignment`의 깊이 중심 정렬과 `offset(z:)`의 앞뒤 이동을 구분해 태양과 행성을 배치합니다.
 
         @Image(source: "spatial-layout-depth.svg", alt: "깊이 축을 따라 뒤, 가운데, 앞에 놓인 행성 개념도")
 
@@ -18,7 +20,7 @@
     }
 
     @Chapter(name: "태양계 움직이기") {
-        행성 데이터에서 공전과 자전에 필요한 값을 꺼내고, `rotation3DLayout`이 레이아웃까지 고려하는 회전을 어떻게 만드는지 실습합니다.
+        행성 데이터와 현재 시간을 연결해 공전 위치와 자전 각도를 구합니다. 태양과 여덟 행성을 같은 공간에 놓고, `rotation3DLayout`이 회전한 모델의 경계를 어떻게 반영하는지 실습합니다.
 
         @Image(source: "spatial-layout-rotation.svg", alt: "원형 궤도를 따라 공전하며 자전하는 행성 개념도")
 
@@ -26,7 +28,7 @@
     }
 
     @Chapter(name: "행성 정보 인터랙션 만들기") {
-        `SpatialContainer`와 `spatialOverlay`를 이용해 선택한 행성 가까이에 정보 카드를 띄우고, 배치·움직임·입력을 하나의 경험으로 연결합니다.
+        앞 장의 행성 데이터에 설명을 추가하고, 움직임을 유지한 채 선택 상태와 `spatialOverlay` 정보 카드를 더합니다. `SpatialContainer`의 장면 정렬과 행성별 카드 정렬을 구분합니다.
 
         @Image(source: "spatial-layout-overlay.svg", alt: "선택된 지구 앞에 정보 카드가 떠 있는 공간 오버레이 개념도")
 
@@ -39,5 +41,9 @@
         @Image(source: "realityview-architecture.svg", alt: "SwiftUI 상태가 RealityView의 태양계 엔티티와 정보 카드를 갱신하는 구조도")
 
         @TutorialReference(tutorial: "doc:04-RealityKitIntegration")
+    }
+
+    @Resources {
+        **제작자:** 조영민 · **문의 및 피드백:** [choyoungmin0322@gmail.com](mailto:choyoungmin0322@gmail.com)
     }
 }

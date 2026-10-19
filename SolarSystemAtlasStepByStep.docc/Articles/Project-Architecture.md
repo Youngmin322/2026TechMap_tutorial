@@ -11,10 +11,10 @@
 | 영역 | 주요 파일 | 책임 |
 | --- | --- | --- |
 | 앱 진입점 | `SolarSystemAtlasApp.swift`, `ContentView.swift` | 볼륨 윈도우와 몰입 공간을 선언하고 첫 화면을 연결합니다. |
-| 데이터 | `Models/Planet.swift` | 이름, 에셋 이름, 표시 크기, 공전·자전 값을 한곳에서 관리합니다. |
+| 데이터 | `Models/Planet.swift` | 이름, 에셋 이름, 행성 설명, 표시 크기, 공전·자전 값을 한곳에서 관리합니다. 학습용 모델의 설명은 Chapter 3 시작 단계에서 추가합니다. |
 | 모델 표시 | `Views/PlanetModelView.swift` | `assetName`으로 RealityKitContent의 USDZ를 불러오고 로딩 상태를 표시합니다. |
 | 학습용 장면 | `Views/SolarSystemView.swift` | `Model3D`와 Spatial Layout API로 태양과 행성을 단계적으로 배치합니다. |
-| 완성 장면 | `Views/SolarSystemAtlasView.swift` | 엔티티를 만들고 위치·회전·선택 상태를 매 프레임 반영합니다. |
+| 완성 장면 | `Views/SolarSystemAtlasView.swift` (완성 앱), `Views/SolarSystemScene.swift` (Chapter 4) | 엔티티를 만들고 위치·회전·선택 상태를 매 프레임 반영합니다. |
 | 표시 UI | `PlanetInfoCard.swift`, RealityView attachments | 행성 레이블과 선택한 행성의 설명을 SwiftUI로 표시합니다. |
 
 처음 실습할 때는 앱 그룹의 루트에 `SolarSystemAtlasApp.swift`와 `ContentView.swift`를 두고, `Models` 그룹에는 `Planet.swift`, `Views` 그룹에는 `PlanetModelView.swift`와 `SolarSystemView.swift`를 만듭니다. 파일 생성 창의 **Add to targets**에서 `SolarSystemAtlas`가 선택되어 있어야 앱이 코드를 컴파일합니다.
@@ -32,6 +32,8 @@
 | `Saturn.usdz` | `"Saturn"` |
 | `Uranus.usdz` | `"Uranus"` |
 | `Neptune.usdz` | `"Neptune"` |
+
+Chapter 4에서는 `ContentView`가 `SolarSystemScene`을 표시합니다. 에셋 정규화는 `EntitySetup`, 좌표·시간 계산은 `OrbitPosition`, 궤도 메시는 `OrbitGuide`에 나누어 둡니다. 저장소의 완성 앱은 같은 책임을 `SolarSystemAtlasView` 안에 모아 둡니다.
 
 ### 런타임 데이터 흐름
 

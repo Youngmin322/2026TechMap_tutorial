@@ -1,102 +1,174 @@
-@Tutorial(time: 35) {
+@Tutorial(time: 50) {
     @Intro(title: "Spatial Layout 예제를 RealityKit 장면으로 확장하기") {
-        앞의 세 튜토리얼에서 만든 데이터와 선택 흐름을 실제 SolarSystemAtlas 앱의 `RealityView` 구조로 옮깁니다. 서로 다른 USDZ의 크기를 맞추고, 시간에 따라 엔티티를 갱신하며, 행성 레이블과 공간 탭 입력을 연결합니다.
+        Chapter 3을 마친 프로젝트에서 이어갑니다. `Planet`과 `PlanetInfoCard`를 사용하면서 태양계를 그리는 화면을 `RealityView`로 옮깁니다. 지름 정규화, 장면 생성과 갱신, 이름 레이블, 공간 탭을 순서대로 연결합니다.
 
-        @Image(source: "realityview-architecture.svg", alt: "Planet 데이터와 RealityKitContent 에셋이 RealityView 장면과 SwiftUI 정보 카드로 이어지는 구조도")
+        앞 장의 SwiftUI `offset`은 포인트 단위이고 RealityKit 엔티티의 `position`은 미터 단위입니다. 이 장에서는 1포인트를 0.001미터로 대응시킵니다. SwiftUI에서 아래쪽으로 증가하던 y값과 달리 RealityKit의 양의 y는 위쪽이며, 정면에서 본 양의 z는 사용자 쪽입니다.
+
+        @Image(source: "realityview-architecture.svg", alt: "행성 데이터와 USDZ 에셋이 RealityView 장면과 SwiftUI 정보 카드로 이어지는 구조도")
     }
 
     @Section(title: "엔티티의 이름과 크기 통일하기") {
         @ContentAndMedia {
-            RealityKitContent의 USDZ는 각자 원본 크기와 피벗이 다를 수 있습니다. 원본 엔티티의 `visualBounds`를 구하고 가장 큰 축이 목표 지름이 되도록 배율을 계산하세요. 모델 중심을 빈 컨테이너의 원점으로 옮기면 이후 위치와 회전을 앱이 정한 기준에서 적용할 수 있습니다.
+            앞 장의 `Planet.swift`와 `PlanetInfoCard.swift`를 이어서 사용합니다. `PlanetModelView`·`PlanetOrbitView`·`SolarSystemView`는 그대로 두고, `Views` 그룹에 새 장면과 보조 파일을 만듭니다. 각 파일을 만들 때 **Add to targets > SolarSystemAtlas**를 확인하세요.
 
-            앱은 엔티티 이름도 규칙으로 관리합니다. `model-Earth`처럼 `Planet.id`에서 이름을 만들면 탭 결과가 어떤 행성인지 되찾을 수 있고, update 클로저에서 같은 엔티티를 안정적으로 찾을 수 있습니다.
+            이 장에서는 같은 평면의 궤도를 기울여 태양계를 구성합니다. 앞 장에서 행성별 시작 깊이를 비교했던 `depth`는 새 장면에서는 사용하지 않습니다. 기존 SwiftUI 뷰가 계속 컴파일되도록 속성은 유지합니다.
 
-            @Image(source: "realityview-architecture.svg", alt: "Planet 데이터와 USDZ 에셋이 이름이 붙은 RealityKit 엔티티로 합쳐지는 구조도")
+            @Image(source: "realityview-architecture.svg", alt: "공유하는 Planet 데이터와 새로 만드는 RealityKit 장면의 관계")
         }
 
         @Steps {
             @Step {
-                `Entity(named:in:)`로 USDZ를 비동기 로드하고 `visualBounds`의 가장 큰 축을 구합니다. 0으로 나누지 않도록 크기가 0일 때는 배율 1을 사용합니다.
+                `Models/Planet.swift`에 `displaySize`를 추가하고 여덟 행성의 값을 채웁니다. 단위는 포인트이며, 모델의 가장 큰 축에 적용할 목표 크기입니다. 토성은 고리를 포함한 크기입니다.
 
-                @Code(name: "EntitySetup.swift", file: "04-fit-normalized.swift", previousFile: "04-fit-start.swift")
+                `summary`, ID, 공전·자전 주기를 유지합니다. 공전 반지름은 92~374포인트로 넓혀 태양과 안쪽 행성이 겹치지 않게 합니다. 이 크기와 거리는 볼륨 안에서 관찰하기 위한 학습용 값입니다.
+
+                @Code(name: "Planet.swift", file: "04-planet-size.swift", previousFile: "03-planet-summary.swift")
             }
 
             @Step {
-                원본 모델을 빈 컨테이너에 넣고, 컨테이너에 앱 고유 이름을 붙입니다. 입력 가능한 행성에는 `InputTargetComponent`, 구형 `CollisionComponent`, `HoverEffectComponent`를 추가합니다.
+                `Views`에 `EntitySetup.swift`를 만듭니다. USDZ를 로드하고 `visualBounds`에서 가장 긴 축을 구해 목표 지름에 맞춥니다. 크기가 0이면 배율 1을 사용해 0으로 나누는 일을 피합니다.
 
-                충돌 구는 시각 모델의 세부 메시보다 단순하지만 작은 행성을 안정적으로 선택하기 좋습니다. 목표 지름의 절반을 반지름으로 사용해 보세요.
+                원본 모델의 중심을 옮긴 다음 빈 컨테이너에 넣습니다. 이후 컨테이너를 회전시키면 원본 피벗이 서로 달라도 모델 중심을 기준으로 자전합니다. 이 파일에는 아래의 전체 코드를 입력합니다.
 
-                @Code(name: "PlanetEntity.swift", file: "04-entity-input.swift", previousFile: "04-entity-named.swift")
+                @Code(name: "EntitySetup.swift", file: "04-fit-normalized.swift", reset: true)
+            }
+
+            @Step {
+                `Views`에 `OrbitPosition.swift`를 만듭니다. 포인트를 미터로 바꾸는 비율, 궤도 기울기, 모델과 레이블의 위치, 시간 진행률, Y축 회전을 한곳에 준비합니다. 아직 화면은 앞 장과 같습니다.
+
+                `planetPosition`은 원형 궤도를 X축 주위로 기울입니다. 모델과 레이블이 같은 함수를 사용하므로 둘의 공전 경로가 일치합니다. `labelPosition`은 모델 위쪽에 이름을 놓을 여백만 더합니다. 모든 공전·자전 주기는 0보다 커야 합니다.
+
+                @Code(name: "OrbitPosition.swift", file: "04-position-tilted.swift", reset: true)
+            }
+        }
+    }
+
+    @Section(title: "태양부터 새 장면에 연결하기") {
+        @ContentAndMedia {
+            먼저 태양 하나를 그리는 `SolarSystemScene`을 만들고 앱의 첫 화면에 연결합니다. 새 화면에서도 모델 로딩이 성공하는지 확인한 뒤 여덟 행성과 움직임을 추가합니다.
+
+            `RealityView`의 생성 클로저에서 엔티티를 만들고, 이후 update 클로저에서는 기존 엔티티의 위치와 방향을 바꿉니다. 태양계의 공통 부모에는 `solar-system-root`라는 이름을 붙입니다.
+        }
+
+        @Steps {
+            @Step {
+                `Views`에 `SolarSystemScene.swift`를 만들고 태양을 로드합니다. 모델을 기다리는 동안 진행 상태를 표시하며, 실패하면 `Sun`이라는 에셋 이름을 화면에 표시합니다. `EntityName`도 같은 파일 맨 아래에 포함합니다.
+
+                `attachments`는 뒤에서 이름 레이블을 추가할 자리입니다. 지금은 비워 둡니다.
+
+                @Code(name: "SolarSystemScene.swift", file: "04-scene-create.swift", reset: true)
+            }
+
+            @Step {
+                `SolarSystemAtlasApp.swift`의 기본 볼륨 크기를 미터로 지정합니다. 새 장면은 미터 좌표를 사용하므로 가로·깊이 0.9미터, 높이 0.5미터를 확보해 가장 바깥 궤도와 모델이 들어갈 공간을 맞춥니다.
+
+                `pointToMeter`는 이 예제의 데이터 변환 규칙입니다. 실제 SwiftUI 1포인트의 물리 크기가 항상 1밀리미터라는 뜻은 아닙니다. 볼륨 크기를 변경한 뒤에는 실행 중인 앱의 창을 닫고 다시 실행해 새 기본 크기로 확인하세요.
+
+                @Code(name: "SolarSystemAtlasApp.swift", file: "04-app-volume.swift", previousFile: "01-app-start.swift")
+            }
+
+            @Step {
+                `ContentView.swift`의 `SolarSystemView()`를 `SolarSystemScene()`으로 바꿉니다. **Command-R**로 실행해 태양 하나가 보이는지 확인합니다. 앞 장의 화면 파일들은 남겨 두어도 됩니다.
+
+                이 시점에는 태양이 움직이지 않습니다. 모델 오류 문구가 보이면 Chapter 1의 에셋 복사 위치와 `Sun.usdz`의 이름을 확인한 뒤 진행합니다.
+
+                @Code(name: "ContentView.swift", file: "04-content-scene.swift", previousFile: "01-content-scene.swift")
+            }
+
+            @Step {
+                `Views`에 `OrbitGuide.swift`를 만듭니다. 안쪽·바깥쪽 꼭짓점을 삼각형으로 이어 얇은 궤도 고리 메시를 만드는 보조 코드입니다. 반투명한 비발광 재질로 양쪽 면을 표시합니다.
+
+                이 파일은 공전 경로를 눈으로 확인하기 위한 것입니다. 다음 단계에서 반지름을 전달해 각 행성의 궤도를 만듭니다.
+
+                @Code(name: "OrbitGuide.swift", file: "04-orbit-guide.swift", reset: true)
+            }
+
+            @Step {
+                `SolarSystemScene.swift`에 `addOrbitPlate`와 `addPlanet`을 추가합니다. 같은 루트 아래에 태양, 기울어진 궤도판, 여덟 행성을 만듭니다. 각 행성은 `model-Earth`처럼 ID에서 만든 이름으로 식별합니다.
+
+                아래 전체 코드로 갱신하고 실행합니다. 이제 태양과 여덟 행성, 여덟 궤도가 보여야 합니다. 시작 각도를 행성마다 45도씩 달리해 같은 위치에 겹쳐서 출발하지 않게 합니다. 아직 애니메이션과 탭은 연결하지 않았습니다.
+
+                @Code(name: "SolarSystemScene.swift", file: "04-scene-planets.swift", previousFile: "04-scene-create.swift")
             }
         }
     }
 
     @Section(title: "장면 생성과 프레임 갱신 나누기") {
         @ContentAndMedia {
-            `RealityView`의 생성 클로저에서는 루트, 궤도, 태양, 행성을 한 번만 추가합니다. update 클로저에서는 기존 엔티티의 위치와 방향만 바꿉니다. 이 경계를 지키면 프레임마다 USDZ를 다시 읽거나 같은 엔티티가 중복되는 일을 피할 수 있습니다.
+            앞 장처럼 `TimelineView(.animation)`의 시간을 공전·자전 각도로 바꿉니다. 이번에는 `offset`과 `rotation3DLayout` 대신 엔티티의 `position`과 `orientation`에 적용합니다.
 
-            공전과 자전은 `TimelineView(.animation)`의 시각에서 계산합니다. 경과 시간을 각 주기로 나눈 나머지를 0에서 1 사이 진행률로 바꾸고, `2π`를 곱해 라디안 각도를 만듭니다.
+            update 클로저는 화면에서 읽은 시간이나 선택 상태가 바뀔 때 기존 엔티티를 갱신합니다. 엔티티를 만드는 생성 클로저와 역할을 나누면 매 프레임 USDZ를 다시 읽지 않아도 됩니다.
 
-            @Image(source: "animation-data-flow.svg", alt: "현재 시각과 행성 주기가 진행률과 각도를 거쳐 장면 위치와 방향을 만드는 흐름도")
+            @Image(source: "animation-data-flow.svg", alt: "시간과 행성 주기가 공전 위치와 자전 방향으로 이어지는 흐름도")
         }
 
         @Steps {
             @Step {
-                애니메이션 시작 시각을 `@State`에 보관하고, 매 프레임 경과 시간을 계산합니다. `RealityView` update 클로저에서 루트 엔티티를 찾아 모든 행성의 현재 상태를 반영합니다.
+                같은 `SolarSystemScene.swift`를 `TimelineView`로 감싸고 `updateSun`과 `update`를 추가합니다. 모델 로딩이 끝난 시각을 시작 시각으로 저장하고, 경과 시간을 각 주기로 나눈 나머지에 `2π`를 곱해 각도를 계산합니다.
 
-                @Code(name: "SolarSystemScene.swift", file: "04-scene-update.swift", previousFile: "04-scene-create.swift")
-            }
+                실행해 태양이 자전하고 여덟 행성의 위치와 방향이 서로 다른 주기로 바뀌는지 확인합니다. 궤도 고리는 고정된 채 행성만 같은 경로를 따라 움직여야 합니다.
 
-            @Step {
-                공전 위치는 `cos`와 `sin`으로 계산합니다. 볼륨에서 깊이 변화가 잘 보이도록 궤도판을 기울이고, 같은 계산을 레이블 attachment에도 적용합니다.
-
-                공전 주기와 자전 주기는 반드시 0보다 커야 합니다. 앱의 값은 실제 천문 비율이 아니라 제한된 볼륨에서 차이를 관찰하기 위한 학습용 비율입니다.
-
-                @Code(name: "OrbitPosition.swift", file: "04-position-tilted.swift", previousFile: "04-position-flat.swift")
+                @Code(name: "SolarSystemScene.swift", file: "04-scene-update.swift", previousFile: "04-scene-planets.swift")
             }
         }
     }
 
     @Section(title: "공간 탭과 SwiftUI 정보 연결하기") {
         @ContentAndMedia {
-            `SpatialTapGesture().targetedToAnyEntity()`가 돌려주는 엔티티는 USDZ 내부의 자식일 수 있습니다. 현재 엔티티부터 부모를 따라가며 앱이 붙인 이름을 찾고, 그 이름과 일치하는 `Planet`을 선택 상태에 저장합니다.
+            이름 레이블은 `RealityView`의 attachment로 만들어 장면 안에 배치합니다. 긴 설명은 바깥 `ZStack`에 두어 읽는 동안 안정된 위치를 유지합니다. 앞 장의 행성을 따라가는 카드에서, 행성을 따라가는 이름과 고정된 설명 카드로 바뀌는 단계입니다.
 
-            짧은 행성 이름은 RealityView attachment로 장면 안에 배치하고, 긴 설명 카드는 바깥 `ZStack`에 둡니다. 레이블은 행성을 따라 움직이고, 정보 카드는 사용자를 향한 안정적인 방향을 유지합니다.
+            여기서는 RealityKit 엔티티를 선택하므로 `InputTargetComponent`, 충돌 영역, `SpatialTapGesture`가 필요합니다. 선택 상태와 `PlanetInfoCard`는 앞 장의 역할을 그대로 이어받습니다.
 
-            @Image(source: "interaction-flow.svg", alt: "공간 탭이 엔티티와 Planet을 찾아 선택 상태, 모델 강조, 정보 카드로 이어지는 흐름도")
+            @Image(source: "interaction-flow.svg", alt: "공간 탭이 엔티티에서 Planet을 찾아 선택 강조와 정보 카드를 갱신하는 흐름도")
         }
 
         @Steps {
             @Step {
-                모든 행성의 레이블 attachment를 만들고 `planet.id`를 attachment ID로 사용합니다. 엔티티를 만들 때 같은 ID로 attachment를 찾아 이름을 붙인 뒤 루트에 추가합니다.
+                `attachments`에 여덟 이름을 만들고 `planet.id`를 ID로 사용합니다. `addPlanet`에서 같은 ID의 attachment를 찾아 루트에 추가하고, `update`에서 모델과 같은 각도로 위치를 갱신합니다.
 
-                @Code(name: "PlanetLabels.swift", file: "04-attachment-labels.swift", previousFile: "04-attachment-start.swift")
+                레이블에는 모델의 자전 방향을 적용하지 않습니다. 실행해 이름이 해당 행성 위를 따라다니면서 모델처럼 자전하지 않는지 확인합니다.
+
+                @Code(name: "SolarSystemScene.swift", file: "04-attachment-labels.swift", previousFile: "04-scene-update.swift")
             }
 
             @Step {
-                공간 탭 결과를 `planet(for:)`에 전달해 선택 상태를 바꿉니다. 선택한 모델은 약간 키우고, `PlanetInfoCard`에는 닫기 동작을 전달해 상태를 `nil`로 되돌립니다.
+                `addPlanet`에서 모델 컨테이너에 입력 대상, 지름의 절반을 반지름으로 한 구형 충돌 영역, hover 효과를 추가합니다. 충돌 구는 고리나 돌출부 전체를 덮는 정밀 메시 대신 중심부를 선택하기 위한 영역입니다.
 
-                모델 확대만으로 선택을 표현하지 마세요. 정보 카드의 행성 이름이 함께 바뀌어야 시각적 크기 차이를 알아보기 어려운 사용자도 현재 선택을 확인할 수 있습니다.
+                아직 탭 콜백은 연결하지 않았습니다. 이 단계에서는 모델 중심에 포인터를 두었을 때 hover가 반응하는지 확인합니다.
 
-                @Code(name: "PlanetSelection.swift", file: "04-tap-selection.swift", previousFile: "04-tap-start.swift")
+                @Code(name: "SolarSystemScene.swift", file: "04-entity-input.swift", previousFile: "04-attachment-labels.swift")
+            }
+
+            @Step {
+                `selectedPlanet` 상태, 공간 탭 제스처, `planet(for:)`와 정보 카드를 연결합니다. 탭 결과가 USDZ 내부 자식이어도 부모를 따라 `model-행성ID` 이름을 찾아 `Planet`으로 변환합니다.
+
+                선택한 모델은 1.18배 커지고 카드의 이름과 설명이 바뀝니다. 같은 행성을 다시 탭하거나 카드의 닫기를 누르면 선택이 해제됩니다. Chapter 3에서 만든 `PlanetInfoCard.swift`를 그대로 사용합니다.
+
+                @Code(name: "SolarSystemScene.swift", file: "04-tap-selection.swift", previousFile: "04-entity-input.swift")
             }
         }
     }
 
     @Section(title: "완성 장면 검증하기") {
+        @ContentAndMedia {
+            처음부터 따라온 프로젝트에서 아래 항목을 확인합니다. 현재 실행 화면은 `ContentView → SolarSystemScene`이며, 데이터와 정보 카드는 앞 장의 파일을 공유합니다.
+        }
+
         @Steps {
             @Step {
-                시뮬레이터 또는 기기에서 여덟 행성과 태양이 모두 보이는지 확인합니다. 행성마다 공전·자전 속도가 다르고, 이름 레이블이 행성 위를 따라 움직여야 합니다.
+                시뮬레이터 또는 기기에서 태양과 여덟 행성, 궤도 고리와 이름 레이블이 모두 보이는지 확인합니다. 행성의 공전·자전 주기가 다르고 이름은 해당 행성 위를 따라 움직여야 합니다.
 
-                @Image(source: "visionos-simulator-result.png", alt: "Apple Vision Pro 시뮬레이터의 공간 안에 태양과 행성 궤도가 표시된 SolarSystemAtlas 실행 결과")
+                @Image(source: "visionos-simulator-result.png", alt: "시뮬레이터에서 태양과 여덟 행성, 기울어진 궤도와 이름을 표시한 태양계 장면의 예시")
             }
 
             @Step {
-                가장 작은 수성과 가장 큰 목성을 각각 탭해 봅니다. hover 반응, 선택 확대, 정보 카드 표시, 닫기 동작이 모두 동작하면 입력 경로가 완성된 것입니다.
+                작은 수성과 큰 목성의 중심을 각각 탭합니다. hover, 선택 확대, 해당 행성의 이름·설명, 닫기 동작을 확인합니다. 다른 행성을 선택하면 카드가 하나만 남고, 같은 행성을 다시 탭하면 사라져야 합니다.
+
+                장면을 옆에서도 관찰하고, 가장 바깥 행성과 정보 카드가 볼륨 밖에서 잘리지 않는지 확인합니다.
             }
 
             @Step {
-                모델 누락, 탭 실패, 레이블 어긋남이 있다면 <doc:Testing-and-Troubleshooting>의 증상별 확인 지점을 따라가세요. 전체 구현의 함수별 책임은 <doc:RealityKit-Scene-Guide>에서 다시 볼 수 있습니다.
+                모델 누락, 탭 실패, 레이블 어긋남이 있다면 <doc:Testing-and-Troubleshooting>의 확인 지점을 따라가세요. 전체 구현의 함수별 책임은 <doc:RealityKit-Scene-Guide>에서 다시 볼 수 있습니다.
             }
         }
     }

@@ -30,6 +30,9 @@ if [[ "$OUTPUT_DIR" == "$BUILD_DIR" ]]; then
   exit 1
 fi
 
+# DocC does not compile @Code snapshots. Check the reader's cumulative code first.
+python3 ./validate-step-by-step-tutorial.py
+
 rm -rf -- "$OUTPUT_DIR" "$BUILD_DIR"
 mkdir -p "$OUTPUT_DIR" "$BUILD_DIR"
 

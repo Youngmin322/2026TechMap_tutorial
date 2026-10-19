@@ -17,7 +17,7 @@ struct PlanetModelView: View {
             } else if phase.error != nil {
                 Text("\(assetName) 모델을 불러올 수 없습니다")
             } else {
-                ProgressView()
+                ProgressView("\(assetName) 모델 불러오는 중")
             }
         }
         .frame(width: 84, height: 84)

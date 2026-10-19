@@ -10,8 +10,7 @@ struct SolarSystemAtlasApp: App {
         .defaultSize(
             width: 900,
             height: 500,
-            depth: 700,
-            in: .points
+            depth: 700
         )
     }
 }

@@ -7,7 +7,7 @@ struct SolarSystemAtlasApp: App {
             ContentView()
         }
         .windowStyle(.volumetric)
-        .defaultSize(width: 900, height: 500, depth: 700, in: .points)
+        .defaultSize(width: 900, height: 500, depth: 700)
     }
 }
 

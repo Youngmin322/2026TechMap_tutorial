@@ -1,9 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
-  <title id="title">깊이 정렬 개념도</title><desc id="desc">앞, 가운데, 뒤 깊이 축에 행성이 배치된 그림</desc>
-  <rect width="1200" height="675" fill="#071124"/>
-  <g stroke="#5d82cb" stroke-width="2" opacity=".65"><path d="M180 514H1010"/><path d="M300 430H890"/><path d="M430 346H760"/></g>
-  <g fill="#b5caff" font-family="-apple-system, sans-serif" font-size="23"><text x="190" y="548">뒤 (back)</text><text x="495" y="464">중앙 (center)</text><text x="805" y="380">앞 (front)</text></g>
-  <circle cx="338" cy="430" r="46" fill="#6f9ee3"/><circle cx="602" cy="346" r="64" fill="#ffb347"/><circle cx="860" cy="262" r="39" fill="#d17467"/>
-  <text x="72" y="105" fill="white" font-family="-apple-system, sans-serif" font-size="42" font-weight="700">depthAlignment</text>
-  <text x="75" y="148" fill="#bed0ff" font-family="-apple-system, sans-serif" font-size="24">하나의 기준면, 서로 다른 z 위치</text>
+  <title id="title">깊이 중심 정렬과 z축 이동</title>
+  <desc id="desc">왼쪽은 서로 다른 크기의 모델 깊이 중심을 정렬한 그림이다. 오른쪽은 정렬된 위치를 0으로 삼아 뒤쪽 -60포인트, 이동 없음 0, 앞쪽 +60포인트를 비교한 옆모습이다. 정면에서 보는 사용자는 오른쪽에 있다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#a9caff" stroke-width="1.5"/></marker>
+  </defs>
+  <rect width="1200" height="675" rx="20" fill="#071124"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif">
+    <text x="52" y="70" fill="#fff" font-size="34" font-weight="700">정렬로 시작 위치를 맞추고, offset으로 이동합니다</text>
+    <text x="52" y="112" fill="#bed0ff" font-size="23">옆에서 본 모습 · z는 뷰의 앞뒤 방향 · 이동량은 포인트 단위</text>
+    <rect x="42" y="155" width="412" height="425" rx="18" fill="#10203c"/>
+    <rect x="478" y="155" width="680" height="425" rx="18" fill="#10203c"/>
+    <text x="68" y="198" fill="#fff" font-size="23" font-weight="600">1. 깊이 중심 정렬</text>
+    <text x="68" y="234" fill="#bed0ff" font-size="20">depthAlignment(.center)</text>
+    <path d="M252 265V510" stroke="#73d5f3" stroke-width="2" stroke-dasharray="8 7"/>
+    <g stroke="#91b6e9" stroke-width="2" opacity=".65"><path d="M95 302H405"/><path d="M95 389H405"/><path d="M95 476H405"/></g>
+    <circle cx="252" cy="302" r="28" fill="#6f9ee3"/>
+    <circle cx="252" cy="389" r="42" fill="#ffb347"/>
+    <circle cx="252" cy="476" r="23" fill="#d17467"/>
+    <text x="130" y="551" fill="#bed0ff" font-size="20">중심이 같은 면에 놓임</text>
+    <text x="504" y="198" fill="#fff" font-size="23" font-weight="600">2. 정렬된 위치에서 앞뒤 이동</text>
+    <text x="504" y="234" fill="#bed0ff" font-size="20">offset(z:) · 같은 모델의 세 가지 위치 비교</text>
+    <path d="M814 265V505" stroke="#73d5f3" stroke-width="2" stroke-dasharray="8 7"/>
+    <path d="M552 357H1060" stroke="#a9caff" stroke-width="3" marker-end="url(#arrow)"/>
+    <g fill="#6f9ee3" stroke="#d3e4ff" stroke-width="2"><circle cx="644" cy="357" r="31"/><circle cx="814" cy="357" r="31"/><circle cx="984" cy="357" r="31"/></g>
+    <g fill="#fff" font-size="23" text-anchor="middle"><text x="644" y="427">−60 pt</text><text x="814" y="427">0</text><text x="984" y="427">+60 pt</text></g>
+    <g fill="#bed0ff" font-size="20" text-anchor="middle"><text x="644" y="465">뒤로 이동</text><text x="814" y="465">이동 없음</text><text x="984" y="465">앞으로 이동</text></g>
+    <g fill="none" stroke="#bed0ff" stroke-width="2"><circle cx="1115" cy="316" r="15"/><path d="M1115 334V379M1097 354H1133M1115 379L1100 400M1115 379L1130 400"/></g>
+    <text x="1115" y="443" fill="#bed0ff" font-size="18" text-anchor="middle">사용자</text>
+    <text x="576" y="551" fill="#bed0ff" font-size="20">뒤쪽 (−z)</text><text x="932" y="551" fill="#bed0ff" font-size="20">앞쪽 (+z)</text>
+    <text x="52" y="625" fill="#bed0ff" font-size="21">0은 정렬된 위치에서의 이동량입니다. 볼륨 전체의 원점이나 태양과의 실제 거리가 아닙니다.</text>
+  </g>
 </svg>
