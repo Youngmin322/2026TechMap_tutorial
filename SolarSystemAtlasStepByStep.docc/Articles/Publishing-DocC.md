@@ -12,7 +12,9 @@
 ./build-step-by-step-docs.sh
 ```
 
-스크립트는 먼저 `validate-step-by-step-tutorial.py`로 Chapter 1부터 3까지의 Swift 코드를 단계 순서대로 타입 검사합니다. 이어서 완성 앱을 빌드하고, `docc convert`를 경고 엄격 모드로 실행해 정적 호스팅용 결과를 `docs/`에 만듭니다.
+스크립트는 먼저 `validate-step-by-step-tutorial.py`로 스타터 프로젝트와 Chapter 1부터 4까지의 Swift 코드를 단계 순서대로 타입 검사합니다. 이어서 완성 앱을 빌드하고, `docc convert`를 경고 엄격 모드로 실행해 정적 호스팅용 결과를 `docs/`에 만듭니다.
+
+스타터·완성본 프로젝트 ZIP은 `python3 make-tutorial-projects.py --build`로 만들고, 코드 단계별 시뮬레이터 프리뷰는 `python3 capture-step-previews.py`로 다시 찍습니다. 두 스크립트 모두 `TutorialProjects/Starter`에서 출발해 튜토리얼의 코드 단계를 순서대로 적용합니다.
 
 단계별 코드만 확인하려면 `./validate-step-by-step-tutorial.py`를 실행합니다. 이 검사는 샘플 간 속성·호출 연결과 코드 변경 비교의 기준 파일을 검증합니다. USDZ 로딩과 화면 배치, 선택·닫기 동작은 시뮬레이터 또는 기기에서 별도로 확인해야 합니다.
 

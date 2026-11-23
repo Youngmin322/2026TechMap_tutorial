@@ -1,0 +1,17 @@
+# DocC build intermediates and logs
+.docc-build/
+.docc-*-build/
+*.docc/.docc-build/
+.preview/
+xcodebuild.log
+
+# Local output of alternate tutorial builds (only docs/ is published)
+docs-*/
+
+.DS_Store
+
+# Tutorial starter/complete projects and step captures are assembled locally
+.tutorial-projects-build/
+.tutorial-captures-build/
+TutorialProjects/**/*.usdz
+__pycache__/

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">시간 기반 애니메이션 데이터 흐름</title>
+  <desc id="desc">TimelineView의 현재 시각과 Planet의 주기가 진행률과 각도를 거쳐 모델 위치와 방향을 만드는 순서</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#121b3d"/><stop offset="1" stop-color="#071022"/></linearGradient><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#9bb8ff"/></marker></defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <text x="68" y="92" fill="white" font-family="-apple-system, sans-serif" font-size="40" font-weight="700">시간을 각도로 바꾸기</text>
+  <text x="70" y="132" fill="#bed0ff" font-family="-apple-system, sans-serif" font-size="22">상태를 누적하지 않고 현재 시각에서 결과를 다시 계산합니다</text>
+  <g font-family="-apple-system, sans-serif">
+    <g><rect x="65" y="245" width="205" height="150" rx="25" fill="#263b77"/><text x="167" y="296" text-anchor="middle" fill="white" font-size="25" font-weight="700">TimelineView</text><text x="167" y="337" text-anchor="middle" fill="#d9e3ff" font-size="20">elapsedTime</text></g>
+    <g><rect x="340" y="245" width="205" height="150" rx="25" fill="#4c3c86"/><text x="442" y="296" text-anchor="middle" fill="white" font-size="25" font-weight="700">Planet</text><text x="442" y="332" text-anchor="middle" fill="#eadfff" font-size="19">orbitDuration</text><text x="442" y="362" text-anchor="middle" fill="#eadfff" font-size="19">rotationDuration</text></g>
+    <g><rect x="615" y="245" width="205" height="150" rx="25" fill="#295c76"/><text x="717" y="296" text-anchor="middle" fill="white" font-size="25" font-weight="700">cycleProgress</text><text x="717" y="337" text-anchor="middle" fill="#d8f3ff" font-size="20">0.0 … 1.0</text></g>
+    <g><rect x="890" y="205" width="245" height="230" rx="25" fill="#376b66"/><text x="1012" y="266" text-anchor="middle" fill="white" font-size="25" font-weight="700">장면 갱신</text><text x="1012" y="312" text-anchor="middle" fill="#dbfff9" font-size="20">orbitAngle → position</text><text x="1012" y="348" text-anchor="middle" fill="#dbfff9" font-size="20">spinAngle → orientation</text><text x="1012" y="392" text-anchor="middle" fill="#9ee7dc" font-size="18">같은 시각에는 같은 결과</text></g>
+  </g>
+  <g fill="none" stroke="#9bb8ff" stroke-width="4" marker-end="url(#a)"><path d="M270 320H325"/><path d="M545 320H600"/><path d="M820 320H875"/></g>
+  <text x="600" y="540" text-anchor="middle" fill="#b9c9f5" font-family="-apple-system, sans-serif" font-size="21">progress × 2π × direction</text>
+</svg>

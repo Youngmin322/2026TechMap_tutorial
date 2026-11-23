@@ -1,0 +1,97 @@
+@Tutorial(time: 40) {
+    @Intro(title: "행성 레이블과 공간 탭 선택 연결하기") {
+        RealityKit 장면 안에 SwiftUI 레이블을 배치하고, 사용자가 행성 모델을 직접 탭할 수 있게 만듭니다. 탭한 USDZ의 자식 엔티티에서 앱의 `Planet` 데이터를 되찾는 과정을 구현합니다.
+
+        @Image(source: "interaction-flow.svg", alt: "행성 탭이 엔티티 검색과 선택 상태로 이어지는 흐름")
+    }
+
+    @Section(title: "SwiftUI 레이블을 3D attachment로 만들기") {
+        @ContentAndMedia {
+            행성 이름은 텍스처로 굽기보다 SwiftUI `Text`로 만들면 Dynamic Type, 글꼴, glass 배경을 그대로 사용할 수 있습니다. RealityView attachment는 이 SwiftUI 뷰를 RealityKit 엔티티로 바꿔 장면에 넣어 줍니다.
+
+            attachment를 선언하는 것만으로는 장면에 보이지 않습니다. 생성 클로저에서 ID로 엔티티를 가져와 루트에 추가하고, 행성과 같은 각도로 위치를 갱신해야 합니다.
+
+            @Image(source: "spatial-layout-overlay.svg", alt: "3D 행성 가까이에 SwiftUI 정보가 배치된 개념")
+        }
+
+        @Steps {
+            @Step {
+                RealityView에 `attachments` 클로저를 추가하고 모든 행성의 이름 뷰를 선언합니다. attachment ID는 `planet.id`를 사용합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-Attachments.swift", reset: true)
+
+                같은 ID를 데이터, 모델 엔티티 이름, attachment에 사용하면 별도의 매핑 Dictionary 없이 행성을 연결할 수 있습니다.
+            }
+
+            @Step {
+                RealityView 생성 클로저의 매개변수를 `content, attachments`로 바꾸고 `addPlanet`에도 attachments를 전달합니다. `addPlanet` 마지막에서 레이블 엔티티를 찾아 루트에 추가하세요.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-Connect-Label.swift", reset: true)
+
+                `labelPosition`은 행성 위치를 먼저 계산한 뒤 지름의 절반과 작은 여백을 y축에 더합니다. 모델 크기가 달라도 레이블이 각 행성 표면 위에 놓이는 이유입니다.
+            }
+
+            @Step {
+                행성 update 마지막에 레이블 위치도 같은 공전 각도로 갱신합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-Update-Label.swift", reset: true)
+
+                앱을 실행하고 레이블이 각 행성과 함께 움직이는지 확인합니다. 모델과 레이블 중 하나만 움직인다면 두 위치 계산에 같은 `angle`이 전달되는지 확인하세요.
+            }
+        }
+    }
+
+    @Section(title: "행성 엔티티를 입력 대상으로 만들기") {
+        @ContentAndMedia {
+            RealityKit에서 보이는 엔티티가 자동으로 탭 가능한 것은 아닙니다. `InputTargetComponent`는 입력을 받을 의사를 표시하고, `CollisionComponent`는 공간에서 어느 영역이 맞았는지 판정할 표면을 제공합니다.
+
+            작은 행성의 복잡한 메시를 그대로 충돌 모양으로 쓰면 선택이 어렵고 계산량도 늘어납니다. 이 프로젝트는 표시 지름의 절반을 가진 단순한 구를 사용합니다.
+
+            @Image(source: "interaction-flow.svg", alt: "공간 탭이 충돌 영역을 통해 행성 엔티티를 찾는 흐름")
+        }
+
+        @Steps {
+            @Step {
+                `addPlanet`에서 모델 이름을 지정한 직후 세 컴포넌트를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-Input-Components.swift", reset: true)
+
+                `HoverEffectComponent`는 시선이나 포인터가 모델에 닿았다는 시각 피드백을 제공합니다. 탭하기 전에 입력 가능 여부를 알려 주므로 공간 인터페이스에서 중요한 affordance입니다.
+            }
+
+            @Step {
+                `selectedPlanet` 상태를 추가하고 RealityView에 targeted `SpatialTapGesture`를 연결합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-Spatial-Tap.swift", reset: true)
+
+                일반 `onTapGesture`는 SwiftUI 뷰 영역을 다루지만 targeted spatial gesture는 실제 충돌한 RealityKit 엔티티를 돌려줍니다.
+            }
+        }
+    }
+
+    @Section(title: "탭한 자식 엔티티를 Planet으로 되돌리기") {
+        @Steps {
+            @Step {
+                탭 결과에서 `Planet`을 찾는 `planet(for:)`를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-Entity-Lookup.swift", reset: true)
+
+                USDZ 안에는 메시와 재질을 가진 여러 자식 엔티티가 있을 수 있습니다. 제스처가 컨테이너가 아닌 자식을 반환할 수 있으므로, `parent`를 따라 올라가며 앱이 붙인 `model-행성ID` 이름을 찾습니다.
+            }
+
+            @Step {
+                행성 update에서 선택 여부에 따라 모델 scale을 바꿉니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-Selection-Scale.swift", reset: true)
+
+                새 모델을 만들지 않고 기존 컨테이너의 scale만 바꾸므로 USDZ를 다시 로드하지 않습니다. 선택하지 않은 행성은 반드시 1로 되돌려 이전 선택이 남지 않게 합니다.
+            }
+
+            @Step {
+                앱을 실행해 각 행성에 포인터를 올리고 탭합니다. hover 반응이 보이고 선택한 행성만 약간 커져야 합니다.
+
+                hover는 보이지만 탭이 되지 않으면 gesture 연결을, hover도 보이지 않으면 `InputTargetComponent`와 `CollisionComponent`가 **컨테이너 엔티티**에 추가되었는지 확인하세요.
+            }
+        }
+    }
+}

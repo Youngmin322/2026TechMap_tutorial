@@ -1,0 +1,99 @@
+@Tutorial(time: 40) {
+    @Intro(title: "SwiftUI 목록을 RealityKit 태양계 장면으로 바꾸기") {
+        `RealityView` 안에 태양과 행성 엔티티를 직접 구성합니다. USDZ마다 다른 원본 크기와 피벗을 통일하고, 각 행성을 원형 궤도의 시작 위치에 배치합니다.
+
+        @Image(source: "realityview-architecture.svg", alt: "Planet과 RealityKitContent가 RealityView 엔티티 장면으로 합쳐지는 구조")
+    }
+
+    @Section(title: "장면의 기준이 되는 루트 엔티티 만들기") {
+        @ContentAndMedia {
+            `Model3D`는 모델 하나를 SwiftUI 뷰처럼 표시하기 편하지만, 궤도 메시와 여러 엔티티의 위치·충돌 영역을 함께 관리하려면 `RealityView`가 적합합니다.
+
+            모든 엔티티를 루트 아래에 두면 장면을 한 단위로 찾거나 이동할 수 있습니다. 문자열 이름은 update 클로저에서 같은 루트를 다시 찾는 식별자가 됩니다.
+
+            @Image(source: "realityview-architecture.svg", alt: "루트 엔티티 아래에 태양, 행성, 레이블이 배치되는 계층")
+        }
+
+        @Steps {
+            @Step {
+                `Views` 그룹에 `SolarSystemAtlasView.swift`를 만들고 세 프레임워크를 import한 뒤 `RealityView`를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "03-RealityView-Root.swift", reset: true)
+
+                `RealityView`의 첫 클로저는 장면이 준비될 때 실행됩니다. 여기서는 엔티티를 **생성**하고, 이후의 update 클로저에서는 이미 만든 엔티티의 값만 바꾸게 됩니다.
+            }
+
+            @Step {
+                `SolarSystemAtlasView` 안에 `pointToMeter` 상수를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "03-Point-To-Meter.swift", reset: true)
+
+                `Planet`의 숫자는 화면에서 조절하기 쉬운 포인트 감각으로 작성했지만 RealityKit 좌표는 미터를 사용합니다. 변환 비율을 한곳에 두면 위치와 크기가 같은 기준을 공유합니다.
+            }
+        }
+    }
+
+    @Section(title: "서로 다른 USDZ의 크기와 중심 맞추기") {
+        @ContentAndMedia {
+            USDZ는 제작 도구와 내보내기 설정에 따라 단위, 중심, 피벗이 다를 수 있습니다. 원본 모델에 같은 scale만 주면 어떤 행성은 지나치게 크거나 회전 중심이 어긋날 수 있습니다.
+
+            `visualBounds`로 실제 보이는 경계를 측정하고, 가장 큰 축이 목표 지름이 되도록 배율을 계산합니다. 원본은 빈 컨테이너 안에 넣어 앱이 정한 중심을 새 피벗으로 사용합니다.
+
+            @Image(source: "spatial-layout-depth.svg", alt: "서로 다른 크기의 모델을 공통 크기 기준에 맞추는 개념")
+        }
+
+        @Steps {
+            @Step {
+                `SolarSystemAtlasView`의 마지막에 `fittedModel` 함수를 추가합니다. 이 함수는 모델 로딩, 크기 계산, 중심 이동을 한 번에 담당합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "03-Fitted-Model.swift", reset: true)
+
+                `largestDimension > 0` 검사는 잘못된 경계를 가진 에셋에서 0으로 나누는 일을 막습니다. 실패를 숨기기 위한 코드가 아니라 계산이 유효한지 지키는 경계 조건입니다.
+            }
+
+            @Step {
+                `sunDiameter`와 `addSun`을 추가하고 RealityView 생성 클로저에서 `await addSun(to: root)`를 호출합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "03-Add-Sun.swift", reset: true)
+
+                태양의 y 위치를 반지름만큼 올리는 이유는 모델의 중심이 바닥면에 묻히지 않게 하기 위해서입니다. 컨테이너 중심을 기준으로 크기를 맞췄기 때문에 `sunDiameter / 2`를 그대로 사용할 수 있습니다.
+            }
+        }
+    }
+
+    @Section(title: "행성을 궤도의 시작 위치에 놓기") {
+        @Steps {
+            @Step {
+                원 위의 좌표를 반환하는 `planetPosition`을 추가합니다. `cos`는 가로축, `sin`은 깊이축을 만들고, `tabletopTilt`는 멀어지는 행성을 조금 낮춰 테이블을 비스듬히 보는 느낌을 줍니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Planet-Position.swift", reset: true)
+
+                각도는 라디안입니다. 한 바퀴가 `2π`라는 기준을 이후 공전 애니메이션에서도 그대로 사용합니다.
+            }
+
+            @Step {
+                `addPlanet`을 추가합니다. `displaySize`는 미터로 바꿔 모델 크기에 사용하고, `orbitRadius`는 시작 위치 계산에 사용합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "03-Add-Planet.swift", reset: true)
+
+                `index * π / 4`는 여덟 행성을 45도 간격으로 시작시킵니다. 모두 같은 각도에서 시작하면 앞쪽 행성들이 겹쳐 보이기 때문에 초기 위치를 분산합니다.
+            }
+
+            @Step {
+                RealityView의 `addSun` 호출 아래에서 `Planet.starter.enumerated()`를 순회하며 `addPlanet`을 호출합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "03-Add-All-Planets.swift", reset: true)
+
+                배열 순서는 태양과의 실제 거리 순서이면서 시작 각도를 정하는 값입니다. 엔티티 식별에는 순서가 아니라 `planet.id`를 사용하므로 나중에 배열이 바뀌어도 선택 로직은 유지됩니다.
+            }
+
+            @Step {
+                `ContentView.swift`가 임시 목록 대신 새 장면을 보여 주도록 바꾸고 실행합니다.
+
+                @Code(name: "ContentView.swift", file: "03-Content-Scene.swift", previousFile: "02-Catalog-View.swift")
+
+                태양과 여덟 행성이 원형 위치에 정지해 있으면 성공입니다. 일부 모델이 보이지 않으면 애니메이션 코드를 추가하기 전에 `fittedModel`과 해당 에셋 이름부터 확인하세요.
+            }
+        }
+    }
+}

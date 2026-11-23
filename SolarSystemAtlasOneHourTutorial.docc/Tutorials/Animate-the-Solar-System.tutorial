@@ -1,0 +1,47 @@
+@Tutorial(time: 20) {
+    @Intro(title: "세션 2: 여덟 행성을 배치하고 공전시키기") {
+        세션 1에서 만든 태양계 장면에 여덟 행성을 추가합니다. 정적인 배치를 먼저 확인한 다음 시간 기반 공전 애니메이션으로 확장합니다.
+    }
+
+    @Section(title: "0–10분: 행성을 궤도 위치에 놓기") {
+        @ContentAndMedia {
+            `Planet.all`을 반복하면 같은 로딩 규칙으로 여덟 모델을 만들 수 있습니다. 각 행성의 배열 순서를 시작 각도에 더해 모델이 한곳에 겹치지 않게 합니다.
+        }
+
+        @Steps {
+            @Step {
+                세션 1의 `SolarSystemAtlasView.swift`에 행성 로딩 반복문과 `position` 함수를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "07-StaticScene.swift", previousFile: "06-AddSun.swift")
+
+                `cos`는 가로 좌표를, `sin`은 깊이 좌표를 만듭니다. `tilt`는 궤도를 살짝 기울여 앞뒤 행성이 볼륨 안에서 겹치지 않도록 합니다.
+            }
+
+            @Step {
+                앱을 실행합니다. 태양 주위에 여덟 행성이 서로 다른 위치에 정지해 있으면 성공입니다.
+
+                일부 모델이 보이지 않으면 애니메이션을 추가하기 전에 `Planet.assetName`과 실제 에셋 이름이 같은지 확인하세요.
+            }
+        }
+    }
+
+    @Section(title: "10–20분: 흐른 시간으로 공전시키기") {
+        @ContentAndMedia {
+            프레임마다 위치를 조금씩 더하지 않고 시작 시각부터 흐른 시간을 사용합니다. 이렇게 하면 프레임 속도가 잠시 떨어져도 같은 시각에는 항상 같은 궤도 위치가 계산됩니다.
+        }
+
+        @Steps {
+            @Step {
+                장면을 `TimelineView`로 감싸고 RealityView의 update 클로저를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "08-AnimatedScene.swift", previousFile: "07-StaticScene.swift")
+
+                생성 클로저는 엔티티를 한 번 만들고, update 클로저는 기존 엔티티의 위치와 회전만 바꿉니다. `truncatingRemainder`는 진행률을 0과 1 사이에서 반복시킵니다.
+            }
+
+            @Step {
+                다시 실행합니다. 안쪽 행성은 빠르게, 바깥쪽 행성은 느리게 공전하면 세션 2를 완료한 것입니다.
+            }
+        }
+    }
+}

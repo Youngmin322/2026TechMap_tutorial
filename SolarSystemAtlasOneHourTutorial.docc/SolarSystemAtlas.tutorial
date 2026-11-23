@@ -1,0 +1,29 @@
+@Tutorials(name: "SolarSystemAtlas 1시간 실습") {
+    @Intro(title: "세 세션으로 완성하는 태양계 도감") {
+        준비된 행성 에셋을 불러와 정적인 3D 장면을 만들고, 공전 애니메이션과 탭 선택을 차례로 연결합니다. 각 세션은 20분 이하이며 이전 세션의 체크포인트에서 이어집니다.
+    }
+
+    @Chapter(name: "세션 1 · 태양계 장면의 뼈대") {
+        볼륨 윈도우와 행성 데이터를 준비하고 태양을 RealityView에 표시합니다. 예상 시간은 20분입니다.
+
+        @Image(source: "one-hour-orbit.svg", alt: "중앙에 태양이 놓인 태양계 장면의 시작 상태")
+
+        @TutorialReference(tutorial: "doc:Build-SolarSystemAtlas-in-One-Hour")
+    }
+
+    @Chapter(name: "세션 2 · 행성 배치와 공전") {
+        여덟 행성을 궤도 위치에 놓고 시간 기반 공전 애니메이션을 만듭니다. 예상 시간은 20분입니다.
+
+        @Image(source: "one-hour-orbit.svg", alt: "태양 주위 여러 궤도에 배치된 여덟 행성")
+
+        @TutorialReference(tutorial: "doc:Animate-the-Solar-System")
+    }
+
+    @Chapter(name: "세션 3 · 선택과 정보 카드") {
+        공간 탭으로 행성을 선택하고 SwiftUI 정보 카드를 연결합니다. 예상 시간은 15분입니다.
+
+        @Image(source: "one-hour-orbit.svg", alt: "공전하는 행성 가운데 하나를 선택하는 상호작용")
+
+        @TutorialReference(tutorial: "doc:Add-Planet-Selection")
+    }
+}

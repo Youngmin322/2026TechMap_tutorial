@@ -1,0 +1,81 @@
+import SwiftUI
+import RealityKit
+import RealityKitContent
+
+struct SolarSystemAtlasView: View {
+    private let tilt: Float = .pi / 10
+
+    var body: some View {
+        RealityView { content in
+            let root = Entity()
+            root.name = "solar-system"
+            content.add(root)
+
+            if let sun = try? await fittedModel(
+                named: "Sun",
+                targetDiameter: 0.085
+            ) {
+                sun.position.y = 0.0425
+                root.addChild(sun)
+            }
+
+            for (index, planet) in Planet.all.enumerated() {
+                if let model = try? await fittedModel(
+                    named: planet.assetName,
+                    targetDiameter: planet.size
+                ) {
+                    model.name = planet.id
+                    model.position = position(
+                        for: planet,
+                        index: index,
+                        elapsed: 0
+                    )
+                    root.addChild(model)
+                }
+            }
+        }
+    }
+
+    private func position(
+        for planet: Planet,
+        index: Int,
+        elapsed: TimeInterval
+    ) -> SIMD3<Float> {
+        let progress = elapsed
+            .truncatingRemainder(dividingBy: planet.orbitDuration)
+            / planet.orbitDuration
+        let angle = Float(progress * 2 * Double.pi)
+            + Float(index) * Float.pi / 4
+        let depth = sin(angle) * planet.orbitRadius
+
+        return SIMD3(
+            cos(angle) * planet.orbitRadius,
+            planet.size / 2 - depth * sin(tilt),
+            depth * cos(tilt)
+        )
+    }
+
+    private func fittedModel(
+        named assetName: String,
+        targetDiameter: Float
+    ) async throws -> Entity {
+        let source = try await Entity(
+            named: assetName,
+            in: realityKitContentBundle
+        )
+        let bounds = source.visualBounds(relativeTo: source)
+        let largest = max(
+            bounds.extents.x,
+            bounds.extents.y,
+            bounds.extents.z
+        )
+        let scale = largest > 0 ? targetDiameter / largest : 1
+
+        source.scale = SIMD3(repeating: scale)
+        source.position = -bounds.center * scale
+
+        let container = Entity()
+        container.addChild(source)
+        return container
+    }
+}

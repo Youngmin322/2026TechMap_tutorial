@@ -1,0 +1,91 @@
+@Tutorial(time: 35) {
+    @Intro(title: "행성 데이터와 3D 모델 카탈로그 만들기") {
+        행성 정보를 하나의 데이터 타입으로 정의하고, RealityKitContent의 USDZ를 `Model3D`로 불러옵니다. 먼저 단순 목록을 만들어 모든 에셋이 정상인지 검증한 뒤 태양계 장면으로 넘어갑니다.
+
+        @Image(source: "realityview-architecture.svg", alt: "Planet 데이터와 RealityKitContent 에셋이 SwiftUI 모델 뷰로 이어지는 구조")
+    }
+
+    @Section(title: "Planet을 화면과 에셋 사이의 계약으로 만들기") {
+        @ContentAndMedia {
+            행성 이름을 기준으로 뷰 안에 조건문을 늘리는 대신, 화면에 필요한 값을 `Planet`에 모읍니다. 뷰는 어떤 행성인지 몰라도 같은 코드로 크기와 움직임을 표현할 수 있습니다.
+
+            `Identifiable`은 `ForEach`가 각 행성을 안정적으로 구분하게 하고, `Hashable`은 선택 상태를 비교하거나 컬렉션에서 사용할 수 있게 합니다.
+
+            @Image(source: "animation-data-flow.svg", alt: "행성 데이터의 크기와 주기가 화면 배치와 애니메이션으로 전달되는 흐름")
+        }
+
+        @Steps {
+            @Step {
+                `Models` 그룹에 `Planet.swift`를 만들고 속성을 입력합니다. `displaySize`와 `orbitRadius`는 화면에 맞춘 학습용 값이고, `orbitDuration`과 `rotationDuration`은 한 바퀴에 걸리는 초입니다.
+
+                @Code(name: "Planet.swift", file: "02-Planet-Type.swift", reset: true)
+
+                `id`에 `assetName`을 사용하는 이유는 USDZ 이름이 행성마다 고유하고, 나중에 엔티티 이름과 attachment ID에도 같은 값을 재사용할 수 있기 때문입니다.
+            }
+
+            @Step {
+                타입 아래에 `starter` 배열을 추가하고 수성 한 개부터 입력합니다. 처음부터 여덟 개를 넣기보다 한 모델로 데이터와 에셋 연결을 검증하면 오타 위치를 빨리 찾을 수 있습니다.
+
+                @Code(name: "Planet.swift", file: "02-Planet-First.swift", reset: true)
+
+                `rotationDirection`의 1은 Y축 양의 방향, -1은 반대 방향 회전을 뜻합니다. 금성과 천왕성처럼 반대 방향을 보여 줄 때 별도 조건문 없이 이 값만 바꿀 수 있습니다.
+            }
+
+            @Step {
+                수성이 정상적으로 표시되는 것을 확인한 뒤 나머지 일곱 행성을 추가합니다. 완성된 파일은 아래 체크포인트와 같아야 합니다.
+
+                @Code(name: "Planet.swift", file: "Checkpoint-Planet.swift")
+
+                실제 천문 크기와 거리를 그대로 사용하면 작은 행성은 보이지 않고 바깥 행성은 볼륨 밖으로 나갑니다. 따라서 이 프로젝트의 숫자는 차이를 느낄 수 있도록 압축한 시각화 값입니다.
+            }
+        }
+    }
+
+    @Section(title: "Model3D의 로딩 상태 다루기") {
+        @ContentAndMedia {
+            `Model3D`는 USDZ 로딩이 비동기로 진행되므로 성공, 실패, 진행 중 상태를 모두 처리해야 합니다. 성공 상태만 작성하면 네트워크 문제가 없어도 큰 에셋을 읽는 동안 빈 공간이 보일 수 있습니다.
+
+            @Image(source: "spatial-layout-cover.svg", alt: "여러 크기의 행성 모델을 같은 화면에 표시하는 개념도")
+        }
+
+        @Steps {
+            @Step {
+                `Views` 그룹에 `PlanetModelView.swift`를 만들고 `Model3D`를 추가합니다. `realityKitContentBundle`을 명시해야 앱 번들이 아니라 Swift 패키지의 RealityKitContent에서 모델을 찾습니다.
+
+                @Code(name: "PlanetModelView.swift", file: "02-Model3D-Start.swift", reset: true)
+
+                `.scaledToFit3D()`는 모델의 세 축을 프레임 안에 맞춥니다. 2D의 `.scaledToFit()`과 달리 깊이까지 고려하므로 `frame(depth:)`도 함께 지정합니다.
+            }
+
+            @Step {
+                실패 상태와 접근성 레이블, 자전 각도를 추가해 `PlanetModelView`를 완성합니다. 오류 문구에 행성 이름을 포함하면 어떤 에셋이 문제인지 실행 화면에서 바로 알 수 있습니다.
+
+                @Code(name: "PlanetModelView.swift", file: "Checkpoint-PlanetModelView.swift", previousFile: "02-Model3D-Start.swift")
+
+                `rotation3DLayout`은 보이는 모델뿐 아니라 회전 후 프레임도 레이아웃에 반영합니다. 지금은 각도가 0이지만 다음 튜토리얼에서 시간 값과 연결합니다.
+            }
+
+            @Step {
+                `Views`에 `PlanetEntryView.swift`를 만들고 모델 아래에 이름과 설명을 배치합니다. 이 뷰는 최종 태양계 화면이 아니라 에셋을 한 번에 검사하기 위한 임시 도구입니다.
+
+                @Code(name: "PlanetEntryView.swift", file: "02-PlanetEntryView.swift", reset: true)
+            }
+        }
+    }
+
+    @Section(title: "여덟 모델을 실행해서 검증하기") {
+        @Steps {
+            @Step {
+                `ContentView.swift`를 가로 스크롤 카탈로그로 바꿉니다. `ForEach`가 `Planet.id`를 사용하므로 배열 순서가 바뀌어도 SwiftUI가 각 모델을 올바르게 추적합니다.
+
+                @Code(name: "ContentView.swift", file: "02-Catalog-View.swift", previousFile: "01-Content-Start.swift")
+            }
+
+            @Step {
+                앱을 실행하고 수성부터 해왕성까지 스크롤합니다. 모든 모델, 이름, 설명이 보여야 합니다. 로드 실패 문구가 나타나면 먼저 해당 `assetName`과 USDZ 이름의 대소문자를 비교하세요.
+
+                이 체크포인트를 통과하면 데이터와 에셋 연결은 끝났습니다. 다음 튜토리얼에서는 같은 데이터를 사용하되, SwiftUI 목록 대신 RealityKit 엔티티 장면을 만듭니다.
+            }
+        }
+    }
+}

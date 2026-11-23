@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """Type-check the cumulative Swift files in Chapters 1–4 in DocC step order.
 
+The reader starts from TutorialProjects/Starter, so the check starts from the
+starter's Swift files too. Every @Code step must name a file that already
+exists in the starter, and the starter files DocC compares against must match
+the starter byte for byte.
+
 Requires Xcode with the visionOS 26+ SDK. A temporary RealityKitContent
 module supplies the package's real public declaration with a check-only
 Bundle.module accessor. This does not validate USDZ loading or runtime UI.
 """
 
 from pathlib import Path
-import re
 import subprocess
 import tempfile
 
-
-ROOT = Path(__file__).resolve().parent
-CATALOG = ROOT / "SolarSystemAtlasStepByStep.docc"
-RESOURCES = CATALOG / "Tutorials/Resources"
-CODE = re.compile(r"@Code\(([^\n]+)\)")
-ATTRIBUTE = re.compile(r'(\w+): "([^"]+)"')
+from tutorial_steps import (
+    RESOURCES, ROOT, STARTER, STARTER_SNAPSHOTS, code_steps, starter_sources,
+)
 
 
 def run(arguments):
@@ -26,7 +27,19 @@ def run(arguments):
     return result.stdout.strip()
 
 
+def check_starter():
+    files = starter_sources()
+    for name, snapshot in STARTER_SNAPSHOTS.items():
+        if (STARTER / files[name]).read_text() != (RESOURCES / snapshot).read_text():
+            raise RuntimeError(f"{snapshot} differs from the starter's {files[name]}")
+    for step in code_steps():
+        if step.name not in files:
+            raise RuntimeError(f"{step.label}: {step.name} is not in the starter project")
+    return files
+
+
 def validate(work):
+    starter_files = check_starter()
     sdk = run(["xcrun", "--sdk", "xrsimulator", "--show-sdk-path"])
     flags = [
         "-sdk", sdk,
@@ -52,35 +65,33 @@ def validate(work):
 
     sources = work / "Sources"
     sources.mkdir()
-    # ContentView exists in the Xcode App template before the first code step.
-    (sources / "ContentView.swift").write_text(
-        'import SwiftUI\nstruct ContentView: View {\n'
-        '    var body: some View { Text("Hello, world!") }\n}\n'
-    )
-    latest = {}
+    for name, relative in starter_files.items():
+        (sources / name).write_text((STARTER / relative).read_text())
+
+    def typecheck():
+        run([
+            "xcrun", "swiftc", *flags, "-I", str(work),
+            "-typecheck", "-parse-as-library",
+            "-module-name", "SolarSystemAtlasTutorial",
+            *map(str, sorted(sources.glob("*.swift"))),
+        ])
+
+    print("Checking starter project", flush=True)
+    typecheck()
+
+    latest = dict(STARTER_SNAPSHOTS)
     count = 0
-    for chapter in ["01-SpatialLayoutBasics", "02-PlanetRotation", "03-PlanetInfoOverlay", "04-RealityKitIntegration"]:
-        tutorial = CATALOG / "Tutorials" / f"{chapter}.tutorial"
-        for match in CODE.finditer(tutorial.read_text()):
-            attrs = dict(ATTRIBUTE.findall(match[1]))
-            name, filename = attrs["name"], attrs["file"]
-            previous = attrs.get("previousFile")
-            if previous and latest.get(name) != previous:
-                raise RuntimeError(
-                    f"{chapter}: {name} compares against {previous}, "
-                    f"but the reader's latest file is {latest.get(name)}"
-                )
-            (sources / name).write_text((RESOURCES / filename).read_text())
-            latest[name] = filename
-            line = tutorial.read_text()[:match.start()].count("\n") + 1
-            print(f"Checking {chapter}:{line} — {filename}", flush=True)
-            run([
-                "xcrun", "swiftc", *flags, "-I", str(work),
-                "-typecheck", "-parse-as-library",
-                "-module-name", "SolarSystemAtlasTutorial",
-                *map(str, sorted(sources.glob("*.swift"))),
-            ])
-            count += 1
+    for step in code_steps():
+        if step.previous and latest.get(step.name) != step.previous:
+            raise RuntimeError(
+                f"{step.chapter}: {step.name} compares against {step.previous}, "
+                f"but the reader's latest file is {latest.get(step.name)}"
+            )
+        (sources / step.name).write_text((RESOURCES / step.file).read_text())
+        latest[step.name] = step.file
+        print(f"Checking {step.label}", flush=True)
+        typecheck()
+        count += 1
 
     for filename in ["s2-core-feature.swift", "s3-complete.swift", "s4-complete.swift"]:
         print(f"Checking standalone checkpoint — {filename}", flush=True)
@@ -89,7 +100,7 @@ def validate(work):
             "-parse-as-library", "-module-name", "SolarSystemAtlasCheckpoint",
             str(RESOURCES / filename),
         ])
-    print(f"PASS: {count} cumulative code steps and 3 standalone checkpoints.")
+    print(f"PASS: starter, {count} cumulative code steps and 3 standalone checkpoints.")
     print("USDZ loading, selection, and card placement require simulator/device verification.")
 
 
