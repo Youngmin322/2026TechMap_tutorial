@@ -1,0 +1,11 @@
+# DocC build intermediates and logs
+.docc-build/
+.docc-*-build/
+*.docc/.docc-build/
+.preview/
+xcodebuild.log
+
+# Local output of alternate tutorial builds (only docs/ is published)
+docs-*/
+
+.DS_Store
