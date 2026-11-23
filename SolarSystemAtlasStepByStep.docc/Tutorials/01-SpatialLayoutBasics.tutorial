@@ -35,6 +35,8 @@
 
             @Step {
                 툴바의 실행 대상에서 **Apple Vision Pro** 시뮬레이터를 선택합니다. 시뮬레이터에서만 실습한다면 **Signing & Capabilities**의 **Team**은 `None`이어도 됩니다. 기기에서 실행하려면 자신의 Team을 선택하고, Bundle Identifier의 `com.example`을 자신의 역도메인으로 바꿉니다.
+
+                @Image(source: "xcode-run-destination.png", alt: "Xcode 툴바의 실행 대상 메뉴를 연 모습. Recent 항목에서 Apple Vision Pro 27.2 시뮬레이터가 선택되어 있다.")
             }
 
             @Step {
