@@ -1,4 +1,4 @@
-@Tutorial(time: 25) {
+@Tutorial(time: 20) {
     @Intro(title: "선택한 행성 가까이에 정보를 띄우기") {
         앞 장에서 움직이던 태양계에 행성 설명과 선택 기능을 추가합니다. `TimelineView`와 `PlanetOrbitView`를 이어서 사용하고, 선택한 행성의 3D 경계에 정보 카드를 배치합니다.
 

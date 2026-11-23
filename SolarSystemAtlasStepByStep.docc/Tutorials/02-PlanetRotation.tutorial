@@ -1,4 +1,4 @@
-@Tutorial(time: 25) {
+@Tutorial(time: 20) {
     @Intro(title: "정적인 배치에 시간 축 더하기") {
         앞에서 만든 `Planet`과 z축 이동량을 이어받아 자전과 공전을 더합니다. 모델의 자전은 `rotation3DLayout`으로, 공전 위치는 시간에 따른 좌표로 표현하고, 태양과 여덟 행성을 같은 중심에 배치합니다.
 
