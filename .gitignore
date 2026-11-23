@@ -9,3 +9,9 @@ xcodebuild.log
 docs-*/
 
 .DS_Store
+
+# Tutorial starter/complete projects and step captures are assembled locally
+.tutorial-projects-build/
+.tutorial-captures-build/
+TutorialProjects/**/*.usdz
+__pycache__/
