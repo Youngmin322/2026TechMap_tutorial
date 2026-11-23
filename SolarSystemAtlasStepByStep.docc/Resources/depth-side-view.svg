@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">옆에서 본 깊이 이동: 공통 기준면에서 z = -60, 0, +60</title>
+  <desc id="desc">장면을 옆에서 본 그림이다. 가운데 세로 점선이 depthAlignment(.center)로 맞춘 공통 기준면이다. 같은 행성을 offset(z: -60)으로 두면 기준면보다 60포인트 뒤, 0이면 기준면 위, +60이면 60포인트 앞에 놓인다. 사용자는 오른쪽에서 장면을 정면으로 본다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#ffd36a"/></marker>
+    <marker id="axis" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#bed0ff"/></marker>
+    <radialGradient id="planet" cx=".35" cy=".35" r=".75"><stop stop-color="#9cc8ff"/><stop offset="1" stop-color="#2d63b8"/></radialGradient>
+  </defs>
+  <rect width="1200" height="800" rx="24" fill="#071124"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif">
+    <text x="60" y="78" fill="#fff" font-size="40" font-weight="700">옆에서 본 모습</text>
+    <text x="60" y="124" fill="#bed0ff" font-size="26">같은 행성의 depth만 바꿔 offset(z:) 결과를 비교합니다</text>
+
+    <!-- back / front zones -->
+    <text x="150" y="190" fill="#8ea3c8" font-size="28" text-anchor="middle">뒤쪽 (−z)</text>
+    <text x="890" y="190" fill="#8ea3c8" font-size="28" text-anchor="middle">앞쪽 (+z)</text>
+
+    <!-- common reference plane -->
+    <rect x="512" y="210" width="16" height="430" rx="8" fill="#73d5f3" opacity=".18"/>
+    <path d="M520 210V640" stroke="#73d5f3" stroke-width="4" stroke-dasharray="14 10"/>
+    <text x="520" y="190" fill="#73d5f3" font-size="28" font-weight="700" text-anchor="middle">공통 기준면</text>
+
+    <!-- row: -60 -->
+    <circle cx="520" cy="290" r="42" fill="none" stroke="#5d7bb0" stroke-width="3" stroke-dasharray="7 7"/>
+    <path d="M470 290H330" stroke="#ffd36a" stroke-width="5" marker-end="url(#arrow)"/>
+    <circle cx="280" cy="290" r="42" fill="url(#planet)"/>
+    <text x="60" y="300" fill="#fff" font-size="30" font-weight="700">z = −60</text>
+
+    <!-- row: 0 -->
+    <circle cx="520" cy="425" r="42" fill="url(#planet)"/>
+    <text x="60" y="435" fill="#fff" font-size="30" font-weight="700">z = 0</text>
+    <text x="590" y="435" fill="#d9e3ff" font-size="26">기준면 그대로</text>
+
+    <!-- row: +60 -->
+    <circle cx="520" cy="560" r="42" fill="none" stroke="#5d7bb0" stroke-width="3" stroke-dasharray="7 7"/>
+    <path d="M570 560H710" stroke="#ffd36a" stroke-width="5" marker-end="url(#arrow)"/>
+    <circle cx="760" cy="560" r="42" fill="url(#planet)"/>
+    <text x="60" y="570" fill="#fff" font-size="30" font-weight="700">z = +60</text>
+
+    <!-- labels next to moved planets -->
+    <text x="280" y="362" fill="#ffd36a" font-size="24" text-anchor="middle">60pt 뒤로</text>
+    <text x="760" y="632" fill="#ffd36a" font-size="24" text-anchor="middle">60pt 앞으로</text>
+
+    <!-- user -->
+    <g transform="translate(1060 425)">
+      <circle r="44" fill="#1c2d52" stroke="#bed0ff" stroke-width="3"/>
+      <ellipse cx="-12" cy="0" rx="20" ry="13" fill="#fff"/>
+      <circle cx="-16" cy="0" r="7" fill="#071124"/>
+      <text y="86" fill="#bed0ff" font-size="26" text-anchor="middle">사용자</text>
+    </g>
+    <path d="M1000 425H870" stroke="#bed0ff" stroke-width="3" stroke-dasharray="6 8"/>
+
+    <!-- z axis -->
+    <path d="M200 700H960" stroke="#bed0ff" stroke-width="3" marker-end="url(#axis)"/>
+    <g stroke="#bed0ff" stroke-width="3"><path d="M280 688V712"/><path d="M520 688V712"/><path d="M760 688V712"/></g>
+    <g fill="#d9e3ff" font-size="26" text-anchor="middle">
+      <text x="280" y="752">−60</text><text x="520" y="752">0</text><text x="760" y="752">+60</text>
+    </g>
+    <text x="985" y="709" fill="#bed0ff" font-size="26">z (pt)</text>
+  </g>
+</svg>

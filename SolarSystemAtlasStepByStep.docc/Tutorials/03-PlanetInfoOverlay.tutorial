@@ -24,7 +24,7 @@
             }
 
             @Step {
-                `Views` 그룹에 `PlanetInfoCard.swift`를 만들고 앱 타깃에 포함합니다. 먼저 이름, `planet.summary`, 닫기 버튼을 표시하는 기본 카드를 작성합니다. 닫기 동작은 카드 밖에서 전달받습니다.
+                스타터에 미리 만들어 둔 `Views/PlanetInfoCard.swift`를 열고 안내 주석을 아래 코드로 바꿉니다. 먼저 이름, `planet.summary`, 닫기 버튼을 표시하는 기본 카드를 작성합니다. 닫기 동작은 카드 밖에서 전달받습니다.
 
                 @Code(name: "PlanetInfoCard.swift", file: "03-card-start.swift", reset: true)
             }
@@ -58,13 +58,17 @@
 
                 카드의 `.offset(z: 12)`는 정렬된 앞쪽 경계에서 12포인트 더 앞에 표시하기 위한 값입니다. Chapter 1의 z축 이동과 같은 의미이며, 카드를 놓을 공간이 자동으로 확보되는 것은 아니므로 볼륨 경계와 다른 행성에 가리지 않는지 확인합니다.
 
-                @Code(name: "PlanetOrbitView.swift", file: "03-spatial-overlay.swift", previousFile: "03-overlay-start.swift")
+                @Code(name: "PlanetOrbitView.swift", file: "03-spatial-overlay.swift", previousFile: "03-overlay-start.swift") {
+                    @Image(source: "preview-03-spatial-overlay.png", alt: "visionOS 시뮬레이터에서 선택한 지구 아래 앞쪽에 이름과 설명, 닫기 버튼이 있는 기본 카드가 붙어 있는 화면. 캡처를 위해 지구를 선택한 상태로 시작했다.")
+                }
             }
 
             @Step {
                 처음 만든 `PlanetInfoCard`의 이름, 설명, 닫기 동작을 유지하고 `.glassBackgroundEffect()`와 여백을 더해 읽기 쉬운 표면을 만듭니다. 이 단계는 카드의 표현만 바꿉니다.
 
-                @Code(name: "PlanetInfoCard.swift", file: "03-card-glass.swift", previousFile: "03-card-start.swift")
+                @Code(name: "PlanetInfoCard.swift", file: "03-card-glass.swift", previousFile: "03-card-start.swift") {
+                    @Image(source: "preview-03-card-glass.png", alt: "visionOS 시뮬레이터에서 지구 정보 카드에 유리 배경과 여백이 적용된 화면. 캡처를 위해 지구를 선택한 상태로 시작했다.")
+                }
             }
 
             @Step {

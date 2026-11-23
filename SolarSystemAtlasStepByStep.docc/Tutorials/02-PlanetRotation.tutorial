@@ -7,16 +7,24 @@
 
     @Section(title: "움직임을 데이터로 설명하기") {
         @ContentAndMedia {
+            아래 첫 단계의 그림처럼 **시간 → 각도 → 위치** 순서로 계산합니다. 지금 시각을 공전 주기로 나눈 나머지가 한 바퀴 중 지난 비율이고, 여기에 360°를 곱하면 공전 각도, 각도의 `cos`와 `sin`에 반지름을 곱하면 행성의 위치가 됩니다.
+
             애니메이션 값을 뷰에 흩어 놓으면 행성을 추가할 때마다 조건문이 늘어납니다. 대신 `Planet` 모델에 `orbitRadius`, `orbitDuration`, `rotationDuration`, `rotationDirection`을 둡니다. 뷰는 현재 시각과 이 값만 받아 각도를 계산하므로, 새 행성은 데이터 한 줄로 늘릴 수 있습니다.
 
             `TimelineView(.animation)`은 화면이 표시되는 동안 현재 시각을 제공합니다. 상태에 매 프레임 누적값을 저장하는 대신, 기준 시각에서 지난 시간을 이용해 각도를 계산하면 뷰가 다시 만들어져도 움직임이 안정적입니다.
-
-            @Image(source: "animation-data-flow.svg", alt: "Planet 데이터와 TimelineView의 시간이 공전·자전 각도로 변환되는 흐름도")
         }
 
         @Steps {
             @Step {
-                `Views` 그룹에 `PlanetOrbitView.swift`를 만들고 **Add to targets > SolarSystemAtlas**를 선택합니다. 행성과 시간을 받는 작은 뷰부터 준비합니다. 다음 단계에서도 `time`을 받는 이 인터페이스를 유지합니다.
+                코드를 작성하기 전에 계산 순서를 그림으로 확인합니다. 공전 주기가 8초인 행성은 2초가 지났을 때 한 바퀴의 0.25만큼 왔고, 0.25 × 360° = 90°입니다. 90°에서 `cos`는 0, `sin`은 1이므로 행성은 태양 바로 앞, 사용자 쪽에 놓입니다.
+
+                자전 각도도 같은 방식으로 자전 주기로 나눠 구합니다. 다음 단계부터 이 계산을 `PlanetOrbitView`에 옮깁니다.
+
+                @Image(source: "orbit-time-angle-position.svg", alt: "공전 주기 8초인 행성의 예. 지금 시각 2초를 8초로 나눈 진행률 0.25가 각도 90도가 되고, 위에서 본 궤도에서 x = cos(90도) × r = 0, z = sin(90도) × r = r인 태양 바로 앞 위치가 된다.")
+            }
+
+            @Step {
+                스타터에 미리 만들어 둔 `Views/PlanetOrbitView.swift`를 열고 안내 주석을 아래 코드로 바꿉니다. 행성과 시간을 받는 작은 뷰부터 준비합니다. 다음 단계에서도 `time`을 받는 이 인터페이스를 유지합니다.
 
                 @Code(name: "PlanetOrbitView.swift", file: "02-timeline-start.swift", reset: true)
             }
@@ -70,7 +78,9 @@
 
                 한 줄로 나열했던 `HStackLayout` 대신 `SpatialContainer(alignment: .center)`로 모델의 중심을 같은 3D 공간에 맞춥니다. 각 행성이 이 공통 중심에서 계산한 위치로 이동하게 됩니다. `SpatialContainer`를 이용한 보조 UI 정렬은 다음 장에서 더 살펴봅니다.
 
-                @Code(name: "SolarSystemView.swift", file: "02-scene-timeline.swift", previousFile: "01-layout-depth-offset.swift")
+                @Code(name: "SolarSystemView.swift", file: "02-scene-timeline.swift", previousFile: "01-layout-depth-offset.swift") {
+                    @Image(source: "preview-02-scene-timeline.png", alt: "visionOS 시뮬레이터에서 태양을 중심으로 여덟 행성이 서로 다른 위치에 흩어져 공전하는 순간을 찍은 화면")
+                }
             }
 
             @Step {

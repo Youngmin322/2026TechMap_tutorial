@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">시간 → 각도 → 행성 위치</title>
+  <desc id="desc">공전 주기가 8초인 행성을 예로 든 그림이다. 지금 시각 2초를 주기 8초로 나누면 진행률 0.25가 되고, 0.25에 360도를 곱하면 공전 각도 90도가 된다. 위에서 내려다본 원형 궤도에서 각도 0도는 태양의 오른쪽이고 90도는 사용자 쪽 앞이다. x는 cos(각도) 곱하기 반지름, z는 sin(각도) 곱하기 반지름으로 구한다. 8초가 지나면 진행률이 다시 0이 된다.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#9bb8ff"/></marker>
+    <marker id="y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#ffd36a"/></marker>
+    <radialGradient id="sun" cx=".4" cy=".4" r=".7"><stop stop-color="#ffe08a"/><stop offset="1" stop-color="#ff8a2a"/></radialGradient>
+    <radialGradient id="planet" cx=".35" cy=".35" r=".75"><stop stop-color="#9cc8ff"/><stop offset="1" stop-color="#2d63b8"/></radialGradient>
+  </defs>
+  <rect width="1200" height="760" rx="24" fill="#071124"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif">
+    <text x="60" y="78" fill="#fff" font-size="40" font-weight="700">시간 → 각도 → 위치</text>
+    <text x="60" y="122" fill="#bed0ff" font-size="25">예: 공전 주기(orbitDuration)가 8초인 행성, 지금 시각 2초</text>
+
+    <!-- panel 1: time -->
+    <rect x="40" y="170" width="330" height="520" rx="22" fill="#10203c"/>
+    <text x="205" y="225" fill="#fff" font-size="32" font-weight="700" text-anchor="middle">1. 시간</text>
+    <path d="M80 330H330" stroke="#3a5487" stroke-width="14" stroke-linecap="round"/>
+    <path d="M80 330H142" stroke="#ffd36a" stroke-width="14" stroke-linecap="round"/>
+    <g fill="#bed0ff" font-size="22" text-anchor="middle"><text x="80" y="372">0초</text><text x="142" y="372">2초</text><text x="330" y="372">8초</text></g>
+    <text x="205" y="290" fill="#ffd36a" font-size="24" text-anchor="middle">한 바퀴 중 지난 부분</text>
+    <text x="205" y="450" fill="#fff" font-size="30" text-anchor="middle">2 ÷ 8 = 0.25</text>
+    <text x="205" y="495" fill="#bed0ff" font-size="22" text-anchor="middle">진행률 (0 이상 1 미만)</text>
+    <text x="205" y="600" fill="#8ea3c8" font-size="21" text-anchor="middle">8초가 지나면</text>
+    <text x="205" y="630" fill="#8ea3c8" font-size="21" text-anchor="middle">다시 0부터 (나머지 연산)</text>
+
+    <path d="M378 430H420" stroke="#9bb8ff" stroke-width="4" marker-end="url(#a)"/>
+
+    <!-- panel 2: angle -->
+    <rect x="430" y="170" width="330" height="520" rx="22" fill="#10203c"/>
+    <text x="595" y="225" fill="#fff" font-size="32" font-weight="700" text-anchor="middle">2. 각도</text>
+    <circle cx="595" cy="350" r="85" fill="none" stroke="#3a5487" stroke-width="4"/>
+    <path d="M595 350L680 350A85 85 0 0 1 595 435Z" fill="#ffd36a" opacity=".35"/>
+    <path d="M595 350H680" stroke="#ffd36a" stroke-width="4"/>
+    <path d="M595 350V435" stroke="#ffd36a" stroke-width="4"/>
+    <text x="635" y="392" fill="#ffd36a" font-size="26" font-weight="700">90°</text>
+    <text x="595" y="500" fill="#fff" font-size="30" text-anchor="middle">0.25 × 360° = 90°</text>
+    <text x="595" y="545" fill="#bed0ff" font-size="22" text-anchor="middle">orbitAngle</text>
+    <text x="595" y="615" fill="#8ea3c8" font-size="21" text-anchor="middle">자전(spinAngle)도 같은 방식,</text>
+    <text x="595" y="645" fill="#8ea3c8" font-size="21" text-anchor="middle">자전 주기로 나눕니다</text>
+
+    <path d="M768 430H810" stroke="#9bb8ff" stroke-width="4" marker-end="url(#a)"/>
+
+    <!-- panel 3: position (top view) -->
+    <rect x="820" y="170" width="340" height="520" rx="22" fill="#10203c"/>
+    <text x="990" y="225" fill="#fff" font-size="32" font-weight="700" text-anchor="middle">3. 위치</text>
+    <text x="990" y="262" fill="#bed0ff" font-size="21" text-anchor="middle">위에서 내려다본 궤도</text>
+    <circle cx="990" cy="390" r="95" fill="none" stroke="#5d7bb0" stroke-width="3" stroke-dasharray="7 7"/>
+    <circle cx="990" cy="390" r="26" fill="url(#sun)"/>
+    <circle cx="1085" cy="390" r="9" fill="none" stroke="#8ea3c8" stroke-width="3"/>
+    <text x="1100" y="372" fill="#8ea3c8" font-size="20">0°</text>
+    <path d="M1083 418A95 95 0 0 1 1018 481" fill="none" stroke="#ffd36a" stroke-width="4" marker-end="url(#y)"/>
+    <circle cx="990" cy="485" r="20" fill="url(#planet)"/>
+    <text x="1022" y="526" fill="#ffd36a" font-size="22">90°</text>
+    <text x="990" y="580" fill="#fff" font-size="24" text-anchor="middle">x = cos(90°) × r = 0</text>
+    <text x="990" y="616" fill="#fff" font-size="24" text-anchor="middle">z = sin(90°) × r = r</text>
+    <text x="990" y="660" fill="#8ea3c8" font-size="21" text-anchor="middle">태양 바로 앞, 사용자 쪽 ↓</text>
+  </g>
+</svg>

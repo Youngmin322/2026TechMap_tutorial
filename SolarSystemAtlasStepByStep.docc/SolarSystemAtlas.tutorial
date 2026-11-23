@@ -12,9 +12,9 @@
     }
 
     @Chapter(name: "Spatial Layout 기초 다지기") {
-        Xcode 프로젝트의 그룹과 Swift 파일을 준비하고 USDZ 이름을 코드와 연결합니다. 이어서 z축의 방향과 이동 단위를 익히고, `depthAlignment`의 깊이 중심 정렬과 `offset(z:)`의 앞뒤 이동을 구분해 태양과 행성을 배치합니다.
+        폴더와 빈 Swift 파일, USDZ 모델이 들어 있는 스타터 프로젝트를 열고 USDZ 이름을 코드와 연결합니다. 이어서 z축의 방향과 이동 단위를 익히고, `depthAlignment`의 깊이 중심 정렬과 `offset(z:)`의 앞뒤 이동을 구분해 태양과 행성을 배치합니다.
 
-        @Image(source: "spatial-layout-depth.svg", alt: "깊이 축을 따라 뒤, 가운데, 앞에 놓인 행성 개념도")
+        @Image(source: "depth-side-view.svg", alt: "옆에서 본 그림. 공통 기준면을 기준으로 같은 행성이 z = -60이면 뒤, 0이면 기준면 위, +60이면 앞에 놓인다.")
 
         @TutorialReference(tutorial: "doc:01-SpatialLayoutBasics")
     }
