@@ -1,0 +1,83 @@
+@Tutorial(time: 20) {
+    @Intro(title: "세션 1: 태양계 장면의 뼈대 만들기") {
+        볼륨 윈도우를 준비하고, 여덟 행성의 데이터를 정의하고, RealityView에 태양을 표시합니다. 이번 세션의 코드는 다음 두 세션이 공유하는 출발점입니다.
+    }
+
+    @Section(title: "0–5분: 볼륨 윈도우 준비하기") {
+        @ContentAndMedia {
+            이 실습은 `Packages/RealityKitContent`에 Sun과 여덟 행성 에셋이 준비되어 있다고 가정합니다. 먼저 앱의 기본 창을 깊이를 가진 공간으로 바꿉니다.
+        }
+
+        @Steps {
+            @Step {
+                `SolarSystemAtlasApp.swift`를 열고 볼륨 윈도우를 설정합니다.
+
+                @Code(name: "SolarSystemAtlasApp.swift", file: "01-SolarSystemAtlasApp.swift", reset: true)
+
+                `.windowStyle(.volumetric)`은 평면 창 대신 깊이를 가진 공간을 만듭니다. `defaultSize`는 가장 먼 행성까지 들어갈 실제 공간의 크기를 미터 단위로 정합니다.
+            }
+
+            @Step {
+                `ContentView.swift`가 앞으로 만들 3D 장면을 표시하도록 정리합니다.
+
+                @Code(name: "ContentView.swift", file: "02-ContentView.swift", reset: true)
+
+                앱 진입 화면과 RealityKit 구현을 분리하면 장면 코드를 별도 파일에서 단계적으로 확장할 수 있습니다.
+            }
+        }
+    }
+
+    @Section(title: "5–10분: 행성 데이터를 정의하기") {
+        @ContentAndMedia {
+            행성별 숫자를 화면 코드에 흩어 놓지 않고 하나의 값으로 묶습니다. 화면은 배열을 반복하고, 데이터만 바꾸어 여덟 행성을 만들 수 있습니다.
+        }
+
+        @Steps {
+            @Step {
+                `Models` 그룹에 `Planet.swift`를 만들고 행성의 표시 정보와 궤도 정보를 입력합니다.
+
+                @Code(name: "Planet.swift", file: "03-Planet.swift", reset: true)
+
+                `Identifiable`은 반복문에서 행성을 구별합니다. 에셋 이름은 중복되지 않으므로 `id`로도 사용합니다. 크기와 궤도 반지름은 RealityKit 좌표에 맞춰 미터 단위로 저장합니다.
+            }
+        }
+    }
+
+    @Section(title: "10–20분: RealityView에 태양 표시하기") {
+        @ContentAndMedia {
+            RealityView의 생성 클로저는 3D 엔티티를 처음 만드는 곳입니다. 루트 엔티티 아래에 모든 모델을 넣어 장면을 하나의 계층으로 관리합니다.
+        }
+
+        @Steps {
+            @Step {
+                `Views` 그룹에 `SolarSystemAtlasView.swift`를 만들고 RealityView와 루트 엔티티를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-SceneShell.swift", reset: true)
+
+                루트의 이름은 다음 세션에서 update 클로저가 같은 엔티티를 다시 찾을 때 사용합니다.
+            }
+
+            @Step {
+                구조체 아래에 `fittedModel` 함수를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "05-ModelLoader.swift", previousFile: "04-SceneShell.swift")
+
+                에셋마다 원본 크기와 중심이 다릅니다. `visualBounds`로 보이는 크기를 측정한 뒤 목표 지름으로 맞추고, 빈 컨테이너를 새 회전 중심으로 사용합니다.
+            }
+
+            @Step {
+                RealityView 생성 클로저에서 태양을 불러와 루트에 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "06-AddSun.swift", previousFile: "05-ModelLoader.swift")
+
+                에셋 로딩은 비동기 작업이므로 `await`가 필요합니다. `try?`는 로딩이 실패했을 때 앱 전체를 중단하지 않고 해당 모델만 건너뜁니다.
+            }
+
+            @Step {
+                앱을 실행합니다. 볼륨 윈도우 중앙에 태양이 보이면 세션 1을 완료한 것입니다.
+
+                태양이 보이지 않으면 다음 세션으로 넘어가기 전에 Reality Composer Pro의 `Sun` 에셋 이름과 패키지 연결을 확인하세요.
+            }
+        }
+    }
+}

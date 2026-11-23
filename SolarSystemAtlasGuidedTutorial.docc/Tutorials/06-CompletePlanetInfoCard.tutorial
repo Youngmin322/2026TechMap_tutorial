@@ -1,0 +1,87 @@
+@Tutorial(time: 35) {
+    @Intro(title: "선택한 행성의 정보 카드로 도감 완성하기") {
+        선택 상태를 사용자가 읽을 수 있는 정보 카드로 바꿉니다. 닫기 동작, glass 배경, 전환 애니메이션, 접근성 레이블을 추가하고 전체 경험을 검증합니다.
+
+        @Image(source: "spatial-layout-overlay.svg", alt: "선택한 지구 옆에 이름과 설명 카드가 표시된 완성 장면")
+    }
+
+    @Section(title: "PlanetInfoCard를 독립된 뷰로 만들기") {
+        @ContentAndMedia {
+            정보 카드를 SolarSystemAtlasView body 안에 직접 작성할 수도 있지만, 별도 뷰로 분리하면 레이아웃과 장면 업데이트 코드를 섞지 않을 수 있습니다.
+
+            카드는 `Planet`을 받아 내용을 표시하고, 닫기 버튼이 눌렸다는 사실만 `onDismiss` 클로저로 부모에게 전달합니다. 어떤 상태를 nil로 만들지는 상태를 소유한 부모가 결정합니다.
+
+            @Image(source: "spatial-layout-overlay.svg", alt: "행성 데이터가 독립된 정보 카드 뷰에 표시되는 구조")
+        }
+
+        @Steps {
+            @Step {
+                `Views` 그룹에 `PlanetInfoCard.swift`를 만들고 이름, 설명, 닫기 버튼을 배치합니다.
+
+                @Code(name: "PlanetInfoCard.swift", file: "06-Card-Basic.swift", reset: true)
+
+                `Spacer`는 제목과 닫기 버튼을 양 끝으로 보냅니다. 카드 폭을 고정하면 행성 설명 길이가 달라도 선택할 때마다 레이아웃이 크게 흔들리지 않습니다.
+            }
+
+            @Step {
+                보조 텍스트 스타일, plain 버튼, 접근성 레이블, glass 배경을 추가합니다.
+
+                @Code(name: "PlanetInfoCard.swift", file: "Checkpoint-PlanetInfoCard.swift", previousFile: "06-Card-Basic.swift")
+
+                x 아이콘만으로는 VoiceOver가 동작을 알기 어렵기 때문에 `도감 닫기` 레이블을 제공합니다. `.glassBackgroundEffect()`는 공간의 배경을 완전히 가리지 않으면서 글자가 읽힐 표면을 만듭니다.
+            }
+        }
+    }
+
+    @Section(title: "RealityView와 카드를 같은 화면에 합치기") {
+        @ContentAndMedia {
+            행성 이름 레이블은 장면 안에서 모델을 따라 움직이지만, 긴 설명 카드는 사용자 쪽을 향한 안정적인 방향이 더 읽기 쉽습니다. 따라서 RealityView attachment가 아니라 바깥 SwiftUI `ZStack`에 둡니다.
+
+            이 구조는 RealityKit 장면의 좌표 계산과 SwiftUI 정보 UI를 분리하면서 `selectedPlanet` 상태는 공유합니다.
+
+            @Image(source: "interaction-flow.svg", alt: "선택 상태가 모델 강조와 SwiftUI 정보 카드를 함께 갱신하는 흐름")
+        }
+
+        @Steps {
+            @Step {
+                `TimelineView` 안의 RealityView를 `ZStack(alignment: .trailing)`으로 감싸고, RealityView 다음에 조건부 카드를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "06-Show-Card.swift", reset: true)
+
+                `if let selectedPlanet`은 선택이 있을 때만 카드를 만들고, 닫기 클로저는 같은 상태를 nil로 되돌립니다. 상태가 하나이므로 동시에 두 카드가 나타날 수 없습니다.
+            }
+
+            @Step {
+                탭 제스처와 닫기 동작의 상태 변경을 `withAnimation(.easeInOut(duration: 0.2))`으로 감쌉니다. 카드에는 opacity와 trailing move를 결합한 transition을 적용합니다.
+
+                애니메이션은 장식이 아니라 선택과 해제 사이의 관계를 보여 줍니다. 너무 긴 전환은 빠르게 다른 행성을 비교할 때 방해가 되므로 0.2초 정도로 짧게 유지합니다.
+            }
+
+            @Step {
+                `ContentView.swift`가 최종 장면만 표시하는지 확인합니다.
+
+                @Code(name: "ContentView.swift", file: "Checkpoint-ContentView.swift", previousFile: "03-Content-Scene.swift")
+            }
+        }
+    }
+
+    @Section(title: "완성 앱을 사용자 흐름으로 검증하기") {
+        @Steps {
+            @Step {
+                앱을 실행해 전체 사용자 흐름을 확인합니다. 태양과 여덟 행성이 각자의 궤도에서 움직이고, 이름 레이블이 모델을 따라가며, hover 반응 뒤 탭한 행성만 커져야 합니다. 오른쪽 정보 카드가 선택한 행성을 설명하고 닫기 버튼을 누르면 카드와 강조가 원래 상태로 돌아오면 성공입니다.
+            }
+
+            @Step {
+                가장 작은 수성과 가장 바깥쪽 해왕성을 꼭 테스트합니다. 수성은 충돌 구가 너무 작지 않은지, 해왕성은 볼륨 경계에서 잘리지 않는지 확인하기 좋은 극단값입니다.
+
+                문제가 있으면 <doc:Testing-and-Troubleshooting>의 증상별 확인 순서를 사용하세요. 한 번에 여러 함수를 고치기보다 마지막으로 통과한 체크포인트부터 비교해야 원인을 찾기 쉽습니다.
+            }
+
+            @Step {
+                전체 구현과 자신의 파일을 마지막에만 비교하고 싶다면 아래 체크포인트를 펼쳐 확인합니다. 이 파일을 처음부터 복사하는 것이 아니라, 앞 단계에서 입력한 코드가 같은 구조로 모였는지 검토하는 용도입니다.
+
+                @Code(name: "SolarSystemAtlasView.swift — 최종 체크포인트", file: "Checkpoint-SolarSystemAtlasView.swift")
+            }
+        }
+    }
+}

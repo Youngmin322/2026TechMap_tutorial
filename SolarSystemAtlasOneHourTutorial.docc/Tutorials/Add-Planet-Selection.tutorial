@@ -1,0 +1,45 @@
+@Tutorial(time: 15) {
+    @Intro(title: "세션 3: 행성을 선택하고 정보 카드 보여 주기") {
+        움직이는 RealityKit 엔티티에 공간 입력을 연결하고, 선택 결과를 SwiftUI 정보 카드로 표시해 태양계 도감을 완성합니다.
+    }
+
+    @Section(title: "0–8분: 행성을 탭할 수 있게 만들기") {
+        @ContentAndMedia {
+            RealityKit 엔티티가 공간 탭을 받으려면 입력 대상, 충돌 모양, 호버 효과가 필요합니다. 선택한 행성은 SwiftUI의 `@State`에 저장합니다.
+        }
+
+        @Steps {
+            @Step {
+                행성 엔티티에 입력 컴포넌트를 추가하고 `SpatialTapGesture`로 선택 상태를 변경합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "09-SelectableScene.swift", previousFile: "08-AnimatedScene.swift")
+
+                `planet(for:)`는 탭된 자식 모델에서 부모를 따라 올라가 행성 ID를 찾습니다. 선택된 행성의 컨테이너는 update 클로저에서 1.15배로 커집니다.
+            }
+
+            @Step {
+                앱을 실행하고 행성 하나를 탭합니다. 선택한 행성만 커지면 공간 입력이 올바르게 연결된 것입니다.
+            }
+        }
+    }
+
+    @Section(title: "8–15분: SwiftUI 정보 카드 연결하기") {
+        @ContentAndMedia {
+            RealityKit 장면과 SwiftUI 카드는 서로 다른 렌더링 계층이지만 같은 `selectedPlanet` 상태를 바라볼 수 있습니다. 상태가 바뀌면 3D 장면과 2D 카드가 함께 갱신됩니다.
+        }
+
+        @Steps {
+            @Step {
+                RealityView를 `ZStack`으로 감싸고 선택한 행성의 이름과 설명을 보여 주는 카드를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "10-InteractiveScene.swift", previousFile: "09-SelectableScene.swift")
+
+                `if let`은 행성이 선택된 동안에만 카드를 만듭니다. 닫기 버튼이 상태를 `nil`로 되돌리면 카드가 사라지고 행성 크기도 원래대로 돌아갑니다.
+            }
+
+            @Step {
+                행성을 탭해 카드가 나타나는지 확인하고 닫기 버튼을 누릅니다. 태양과 여덟 행성, 공전, 선택 강조, 정보 카드가 모두 동작하면 세션 3을 완료한 것입니다.
+            }
+        }
+    }
+}

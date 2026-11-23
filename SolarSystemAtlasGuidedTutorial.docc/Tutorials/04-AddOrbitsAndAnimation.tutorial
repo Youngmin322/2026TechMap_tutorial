@@ -1,0 +1,101 @@
+@Tutorial(time: 45) {
+    @Intro(title: "궤도와 시간 기반 공전·자전 추가하기") {
+        정지한 행성 아래에 궤도 링을 만들고, `TimelineView`의 시간으로 태양과 행성을 움직입니다. 프레임마다 값을 누적하지 않고 현재 시각에서 위치를 계산하는 이유를 함께 살펴봅니다.
+
+        @Image(source: "spatial-layout-rotation.svg", alt: "태양 주위를 공전하면서 스스로 자전하는 행성 개념도")
+    }
+
+    @Section(title: "행성의 이동 경로를 눈에 보이게 만들기") {
+        @ContentAndMedia {
+            RealityKit에는 이 프로젝트에 바로 맞는 얇은 원형 궤도 엔티티가 없으므로 정점과 삼각형 인덱스로 링 메시를 만듭니다. 안쪽 원과 바깥쪽 원의 점을 번갈아 만들고, 인접한 두 쌍을 삼각형 두 개로 연결합니다.
+
+            궤도는 빛의 영향을 받을 필요가 없으므로 `UnlitMaterial`을 사용합니다. 어떤 조명에서도 같은 밝기로 보여 학습자가 이동 경로를 쉽게 읽을 수 있습니다.
+
+            @Image(source: "spatial-layout-rotation.svg", alt: "태양을 중심으로 여러 원형 궤도가 배치된 장면")
+        }
+
+        @Steps {
+            @Step {
+                `SolarSystemAtlasView.swift` 상단에 `UIKit`을 import합니다. 궤도 재질의 반투명 흰색을 만들 때 `UIColor`를 사용합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Import-UIKit.swift", reset: true)
+            }
+
+            @Step {
+                `makeOrbitRing`을 추가합니다. `segments`가 클수록 원이 부드럽지만 정점 수도 늘어납니다. 192는 볼륨 크기에서 충분히 매끄럽고 계산 부담도 작은 값입니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Orbit-Ring.swift", reset: true)
+
+                `material.faceCulling = .none`은 링의 위와 아래에서 모두 보이게 합니다. 궤도판을 기울이면 뒷면을 보게 되는 구간이 생기므로 단면 렌더링만 사용하면 일부가 사라질 수 있습니다.
+            }
+
+            @Step {
+                모든 링을 담을 `orbitPlate`를 만들고 x축으로 기울입니다. 각 행성의 `orbitRadius`로 링을 하나씩 생성합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Add-Orbit-Plate.swift", reset: true)
+
+                행성 좌표에서 각 위치를 개별적으로 기울이는 것과 같은 `tabletopTilt`를 사용해야 모델과 링이 같은 평면 위에 놓입니다.
+            }
+
+            @Step {
+                RealityView 생성 클로저에서 태양을 추가하기 전에 `addOrbitPlate(to: root)`를 호출하고 실행합니다. 움직임은 없어도 각 행성이 링 위에 놓여 보여야 합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Create-Orbit-Scene.swift", reset: true)
+            }
+        }
+    }
+
+    @Section(title: "TimelineView로 현재 프레임의 시간을 얻기") {
+        @ContentAndMedia {
+            `@State`에 각도를 저장하고 매 프레임 더하면 화면이 잠시 멈췄을 때 실제 시간과 위치가 어긋날 수 있습니다. 시작 시각 이후의 경과 시간에서 각도를 계산하면 같은 시각에는 항상 같은 결과가 나옵니다.
+
+            `RealityView`의 생성 클로저는 엔티티를 한 번 만들고, update 클로저는 위치와 방향만 갱신합니다. update 안에서 모델을 다시 로드하지 않는 것이 중요합니다.
+
+            @Image(source: "animation-data-flow.svg", alt: "경과 시간이 진행률과 각도로 바뀌어 장면을 갱신하는 흐름")
+        }
+
+        @Steps {
+            @Step {
+                `animationStartDate`를 상태로 추가하고 기존 RealityView를 `TimelineView(.animation)`으로 감쌉니다. update 클로저도 함께 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Timeline.swift", reset: true)
+
+                시작 시각을 일반 지역 변수로 body 안에 만들면 body가 다시 평가될 때마다 0초로 돌아갑니다. `@State`에 두면 뷰의 생명주기 동안 기준 시각이 유지됩니다.
+            }
+
+            @Step {
+                경과 시간을 한 주기의 0에서 1 사이 값으로 바꾸는 `cycleProgress`와 Y축 회전 quaternion을 만드는 `rotation`을 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Cycle-Progress.swift", reset: true)
+
+                진행률에 `2π`를 곱하면 라디안 한 바퀴가 됩니다. 공전과 자전이 같은 계산식을 공유하고 주기만 다르게 사용할 수 있습니다.
+            }
+        }
+    }
+
+    @Section(title: "태양과 행성을 매 프레임 갱신하기") {
+        @Steps {
+            @Step {
+                태양의 현재 방향을 계산하는 `updateSun`을 추가합니다. 태양 엔티티는 생성할 때 붙인 `sun-model` 이름으로 다시 찾습니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Update-Sun.swift", reset: true)
+            }
+
+            @Step {
+                행성의 공전 각도, 자전 각도, 위치를 계산하는 `update`를 추가합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Update-Planet.swift", reset: true)
+
+                공전 각도에는 초기 `index * π / 4`를 더해 시작 위치를 유지합니다. 자전 각도에는 `rotationDirection`을 곱해 행성마다 회전 방향을 바꿉니다.
+            }
+
+            @Step {
+                RealityView update 클로저에서 루트를 찾고 태양과 모든 행성을 갱신합니다.
+
+                @Code(name: "SolarSystemAtlasView.swift", file: "04-Update-All.swift", reset: true)
+
+                앱을 실행해 궤도 링은 정지하고 행성만 각자의 속도로 움직이는지 확인합니다. 행성이 링에서 벗어나면 `planetPosition`과 `orbitPlate`가 같은 `tabletopTilt`를 사용하는지 비교하세요.
+            }
+        }
+    }
+}
