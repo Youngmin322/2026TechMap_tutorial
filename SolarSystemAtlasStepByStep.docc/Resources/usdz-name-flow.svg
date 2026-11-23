@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1100" viewBox="0 0 1000 1100" role="img" aria-labelledby="title desc">
+  <title id="title">USDZ 이름이 화면의 모델이 되기까지</title>
+  <desc id="desc">지구를 예로 든 흐름도다. Planet.swift의 assetName "Earth"가 PlanetModelView(assetName:)로 전달되고, PlanetModelView는 Model3D(named: "Earth", bundle: realityKitContentBundle)를 호출한다. Model3D는 RealityKitContent 패키지의 RealityKitContent.rkassets에서 Earth.usdz를 찾는다. 이름은 확장자를 뺀 파일 이름과 대소문자까지 같아야 한다.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#ffd36a"/></marker>
+  </defs>
+  <rect width="1000" height="1100" rx="24" fill="#071124"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif">
+    <text x="60" y="88" fill="#fff" font-size="46" font-weight="700">USDZ 이름 → 화면의 모델</text>
+    <text x="60" y="140" fill="#bed0ff" font-size="30">예: 지구 · 같은 문자열 "Earth"가 끝까지 전달됩니다</text>
+
+    <!-- 1. Planet -->
+    <rect x="60" y="185" width="880" height="160" rx="22" fill="#10203c" stroke="#3a5487" stroke-width="2"/>
+    <text x="95" y="240" fill="#8ea3c8" font-size="28">1 · Models/Planet.swift</text>
+    <text x="95" y="305" fill="#fff" font-size="40" font-family="SF Mono, Menlo, monospace">assetName: <tspan fill="#ffd36a">"Earth"</tspan></text>
+
+    <path d="M500 350V405" stroke="#ffd36a" stroke-width="5" marker-end="url(#a)"/>
+
+    <!-- 2. PlanetModelView -->
+    <rect x="60" y="415" width="880" height="160" rx="22" fill="#10203c" stroke="#3a5487" stroke-width="2"/>
+    <text x="95" y="470" fill="#8ea3c8" font-size="28">2 · Views/PlanetModelView.swift</text>
+    <text x="95" y="535" fill="#fff" font-size="36" font-family="SF Mono, Menlo, monospace">PlanetModelView(assetName:)</text>
+
+    <path d="M500 580V635" stroke="#ffd36a" stroke-width="5" marker-end="url(#a)"/>
+
+    <!-- 3. Model3D -->
+    <rect x="60" y="645" width="880" height="200" rx="22" fill="#1c2d52" stroke="#73d5f3" stroke-width="3"/>
+    <text x="95" y="700" fill="#8ea3c8" font-size="28">3 · Model3D가 이름과 번들로 찾기</text>
+    <text x="95" y="757" fill="#fff" font-size="34" font-family="SF Mono, Menlo, monospace">Model3D(named: <tspan fill="#ffd36a">"Earth"</tspan>,</text>
+    <text x="95" y="807" fill="#fff" font-size="34" font-family="SF Mono, Menlo, monospace">        bundle: <tspan fill="#73d5f3">realityKitContentBundle</tspan>)</text>
+
+    <path d="M500 850V905" stroke="#ffd36a" stroke-width="5" marker-end="url(#a)"/>
+
+    <!-- 4. rkassets -->
+    <rect x="60" y="915" width="880" height="140" rx="22" fill="#10203c" stroke="#3a5487" stroke-width="2"/>
+    <g transform="translate(95 940)">
+      <path d="M0 0H52L72 20V90H0Z" fill="#2d63b8"/>
+      <path d="M52 0V20H72" fill="#9cc8ff"/>
+      <text x="36" y="66" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">USDZ</text>
+    </g>
+    <text x="195" y="972" fill="#8ea3c8" font-size="28">4 · RealityKitContent.rkassets</text>
+    <text x="195" y="1030" fill="#fff" font-size="40" font-family="SF Mono, Menlo, monospace"><tspan fill="#ffd36a">Earth</tspan>.usdz</text>
+    <text x="905" y="1030" fill="#bed0ff" font-size="26" text-anchor="end">확장자 빼고, 대소문자까지 같게</text>
+  </g>
+</svg>
