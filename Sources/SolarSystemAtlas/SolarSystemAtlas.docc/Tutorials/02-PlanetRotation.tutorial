@@ -2,8 +2,7 @@
     @Intro(title: "정적인 배치에 시간 축 더하기") {
         앞에서 만든 깊이 있는 태양계에 자전과 공전을 더합니다. 핵심은 회전을 단순한 시각 효과로 끝내지 않고, 회전한 모델의 3D 프레임까지 레이아웃에 반영하는 것입니다.
 
-        <!-- TODO: 회전 애니메이션 장면 캡처 또는 짧은 영상으로 교체하세요. -->
-        @Image(source: "spatial-layout-rotation.svg", alt: "태양 주위를 공전하고 스스로 자전하는 행성의 자리표시자 일러스트레이션")
+        @Image(source: "spatial-layout-rotation.svg", alt: "태양 주위를 공전하면서 스스로 자전하는 행성 개념도")
     }
 
     @Section(title: "움직임을 데이터로 설명하기") {
@@ -12,8 +11,7 @@
 
             `TimelineView(.animation)`은 화면이 표시되는 동안 현재 시각을 제공합니다. 상태에 매 프레임 누적값을 저장하는 대신, 기준 시각에서 지난 시간을 이용해 각도를 계산하면 뷰가 다시 만들어져도 움직임이 안정적입니다.
 
-            <!-- TODO: Planet 모델과 시간 흐름을 설명하는 다이어그램으로 교체하세요. -->
-            @Image(source: "spatial-layout-rotation.svg", alt: "Planet 데이터에서 시간과 회전 각도를 계산해 모델 뷰로 전달하는 자리표시자 일러스트레이션")
+            @Image(source: "animation-data-flow.svg", alt: "Planet 데이터와 TimelineView의 시간이 공전·자전 각도로 변환되는 흐름도")
         }
 
         @Steps {
@@ -39,8 +37,7 @@
 
             `rotation3DLayout(_:axis:)`은 회전한 결과가 차지하는 프레임을 레이아웃 계산에 포함합니다. 이 앱에서는 Y축 회전을 사용해 행성의 자전을 만들고, 궤도 반지름만큼 옮긴 모델 묶음을 같은 방식으로 회전시켜 공전 경로를 만듭니다.
 
-            <!-- TODO: rotation3DEffect와 rotation3DLayout의 프레임 차이 이미지로 교체하세요. -->
-            @Image(source: "spatial-layout-rotation.svg", alt: "회전 후 경계 상자가 바뀌는 3D 레이아웃의 자리표시자 일러스트레이션")
+            @Image(source: "spatial-layout-rotation.svg", alt: "회전한 뷰의 경계 상자까지 레이아웃에 반영하는 개념도")
         }
 
         @Steps {

@@ -2,8 +2,7 @@
     @Intro(title: "깊이 축을 가진 태양계의 첫 장면") {
         태양계는 행성의 순서만 나열해도 이해할 수 있지만, 모두가 같은 평면에 있으면 궤도와 거리의 감각이 사라집니다. 이 튜토리얼에서는 앱의 구조를 먼저 확인하고, SwiftUI 레이아웃에 깊이 축을 추가하는 방법을 배웁니다.
 
-        <!-- TODO: 기본 배치가 완성된 앱 화면 캡처로 교체하세요. -->
-        @Image(source: "spatial-layout-depth.svg", alt: "가운데 태양과 깊이 방향으로 분리된 행성이 있는 자리표시자 일러스트레이션")
+        @Image(source: "spatial-layout-depth.svg", alt: "공통 기준면에서 서로 다른 깊이에 놓인 행성 개념도")
     }
 
     @Section(title: "프로젝트의 지도를 읽기") {
@@ -12,8 +11,7 @@
 
             이 문서 카탈로그의 `Tutorials/Resources/`는 독자가 단계별로 비교할 코드 스냅샷을 둡니다. 앱 소스와 별개이므로, 예제를 읽다가 실제 프로젝트의 파일을 잃어버릴 걱정 없이 변화만 살펴볼 수 있습니다.
 
-            <!-- TODO: Xcode 프로젝트 내비게이터 캡처로 교체하세요. -->
-            @Image(source: "spatial-layout-cover.svg", alt: "앱 소스, 모델, RealityKitContent, DocC 리소스의 관계를 나타낸 자리표시자 일러스트레이션")
+            @Image(source: "realityview-architecture.svg", alt: "앱 소스와 RealityKitContent, DocC 카탈로그의 역할을 나눈 구조도")
         }
 
         @Steps {
@@ -39,8 +37,7 @@
 
             그 위에서 각 행성에 `offset(z:)`를 적용하면 행성마다 앞뒤 위치를 줄 수 있습니다. 즉 `depthAlignment`는 **공통 기준면**, `offset(z:)`는 **그 기준면에서의 개별 거리**를 담당합니다. 둘을 함께 사용하면 뷰가 겹쳐도 우연한 그리기 순서에 기대지 않는 3D 배치가 됩니다.
 
-            <!-- TODO: depthAlignment 전후 비교 이미지로 교체하세요. -->
-            @Image(source: "spatial-layout-depth.svg", alt: "동일한 가로 레이아웃에서 행성이 서로 다른 깊이에 놓인 자리표시자 일러스트레이션")
+            @Image(source: "spatial-layout-depth.svg", alt: "동일한 가로 레이아웃에서 행성이 서로 다른 깊이에 놓인 개념도")
         }
 
         @Steps {

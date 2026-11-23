@@ -2,8 +2,7 @@
     @Intro(title: "선택한 행성 가까이에 정보를 띄우기") {
         공간 인터페이스에서는 설명 카드를 화면 구석에 고정하는 것보다, 사용자가 고른 대상과 함께 보이게 하는 편이 맥락을 유지하기 쉽습니다. 이 튜토리얼에서는 탭으로 행성을 선택하고, 그 행성의 3D 경계 안에 정보 카드를 배치합니다.
 
-        <!-- TODO: 선택된 행성과 정보 카드가 함께 보이는 실제 화면 캡처로 교체하세요. -->
-        @Image(source: "spatial-layout-overlay.svg", alt: "행성 앞쪽에 이름과 설명 카드가 표시된 자리표시자 일러스트레이션")
+        @Image(source: "spatial-layout-overlay.svg", alt: "행성 앞쪽에 이름과 설명 카드가 표시된 공간 오버레이 개념도")
     }
 
     @Section(title: "선택 상태를 하나로 모으기") {
@@ -12,8 +11,7 @@
 
             SwiftUI의 `onTapGesture`는 시작하기 좋은 입력 방식입니다. 실제 RealityView 기반 앱에서 3D 엔티티를 직접 탭한다면 `SpatialTapGesture().targetedToAnyEntity()`로 대체하고, 탭한 엔티티 이름을 `Planet`에 매핑하면 같은 상태 흐름을 유지할 수 있습니다.
 
-            <!-- TODO: 탭 입력에서 selectedPlanet으로 이어지는 흐름 다이어그램으로 교체하세요. -->
-            @Image(source: "spatial-layout-overlay.svg", alt: "행성 탭이 selectedPlanet 상태를 바꾸고 정보 카드를 표시하는 자리표시자 일러스트레이션")
+            @Image(source: "interaction-flow.svg", alt: "행성 탭이 선택 상태를 바꾸고 정보 카드를 표시하는 흐름도")
         }
 
         @Steps {
@@ -39,8 +37,7 @@
 
             `spatialOverlay(alignment: .bottomFront)`는 특정 행성 뷰의 3D 경계 안에 정보 카드를 얹습니다. 여기서 `.bottomFront`는 카드가 모델의 아래쪽이면서 사용자 쪽에 오도록 지정합니다. 화면 전체의 절대 좌표가 아니라 대상의 경계를 기준으로 하므로, 행성이 움직여도 카드의 의미 있는 위치가 유지됩니다.
 
-            <!-- TODO: 행성 경계와 bottomFront 오버레이 위치를 보여 주는 이미지로 교체하세요. -->
-            @Image(source: "spatial-layout-overlay.svg", alt: "3D 모델의 아래 앞쪽 경계에 맞춰 정보 카드가 정렬된 자리표시자 일러스트레이션")
+            @Image(source: "spatial-layout-overlay.svg", alt: "3D 모델의 아래 앞쪽 경계에 맞춰 정보 카드가 정렬된 개념도")
         }
 
         @Steps {
@@ -67,7 +64,7 @@
     @Section(title: "완성 흐름 되짚기") {
         @Steps {
             @Step {
-                SolarSystemAtlas는 세 단계가 이어진 결과입니다. `depthAlignment`가 행성들이 공유할 깊이 기준면을 만들고 `offset(z:)`가 각 행성의 앞뒤 거리를 정합니다. `rotation3DLayout`은 회전한 모델의 프레임까지 레이아웃에 반영해 자전·공전을 자연스럽게 이어 줍니다. 마지막으로 선택 상태와 `SpatialContainer`·`spatialOverlay`가 대상 가까이에 읽기 쉬운 설명을 배치합니다. 이제 행성 수를 늘리거나, 궤도 링을 RealityKit으로 추가하거나, `ImmersiveSpace`에서 더 큰 장면으로 확장해 보세요. 공간 레이아웃의 핵심은 3D 효과를 덧붙이는 것이 아니라 깊이를 처음부터 레이아웃과 상호작용의 일부로 취급하는 데 있습니다.
+                여기까지는 Spatial Layout API에 집중한 독립 실행 예제를 완성했습니다. `depthAlignment`와 `offset(z:)`가 깊이 기준을 만들고, `rotation3DLayout`이 회전한 프레임을 레이아웃에 반영하며, `SpatialContainer`와 `spatialOverlay`가 대상 가까이에 설명을 배치합니다. 다음 튜토리얼에서는 같은 데이터와 상태 흐름을 실제 프로젝트의 `RealityView` 엔티티 장면으로 확장합니다.
             }
         }
     }

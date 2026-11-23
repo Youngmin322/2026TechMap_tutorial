@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">SolarSystemAtlas 아키텍처</title>
+  <desc id="desc">Planet 데이터와 RealityKitContent 에셋이 RealityView 장면을 만들고, 시간과 선택 상태가 장면과 정보 카드를 갱신하는 흐름</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#111b40"/><stop offset="1" stop-color="#050816"/></linearGradient><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#8fb2ff"/></marker></defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <text x="68" y="88" fill="white" font-family="-apple-system, sans-serif" font-size="40" font-weight="700">앱 구조와 데이터 흐름</text>
+  <text x="70" y="126" fill="#bed0ff" font-family="-apple-system, sans-serif" font-size="22">SwiftUI 상태와 RealityKit 엔티티를 분리해 연결합니다</text>
+  <g font-family="-apple-system, sans-serif">
+    <g><rect x="75" y="205" width="240" height="105" rx="22" fill="#24366c"/><text x="195" y="248" text-anchor="middle" fill="white" font-size="25" font-weight="700">Planet.starter</text><text x="195" y="280" text-anchor="middle" fill="#cbd8ff" font-size="19">크기 · 궤도 · 주기</text></g>
+    <g><rect x="75" y="390" width="240" height="105" rx="22" fill="#24366c"/><text x="195" y="433" text-anchor="middle" fill="white" font-size="25" font-weight="700">RealityKitContent</text><text x="195" y="465" text-anchor="middle" fill="#cbd8ff" font-size="19">태양 · 행성 USDZ</text></g>
+    <g><rect x="480" y="255" width="265" height="165" rx="28" fill="#315eb0"/><text x="612" y="311" text-anchor="middle" fill="white" font-size="29" font-weight="700">RealityView</text><text x="612" y="350" text-anchor="middle" fill="#e6efff" font-size="20">엔티티 생성 · attachment</text><text x="612" y="382" text-anchor="middle" fill="#e6efff" font-size="20">위치 · 회전 · 선택 강조</text></g>
+    <g><rect x="880" y="195" width="245" height="105" rx="22" fill="#5a3f9e"/><text x="1002" y="238" text-anchor="middle" fill="white" font-size="25" font-weight="700">TimelineView</text><text x="1002" y="270" text-anchor="middle" fill="#eadfff" font-size="19">경과 시간</text></g>
+    <g><rect x="880" y="395" width="245" height="105" rx="22" fill="#396f6b"/><text x="1002" y="438" text-anchor="middle" fill="white" font-size="25" font-weight="700">selectedPlanet</text><text x="1002" y="470" text-anchor="middle" fill="#d9fffa" font-size="19">모델 강조 · 정보 카드</text></g>
+  </g>
+  <g fill="none" stroke="#8fb2ff" stroke-width="4" marker-end="url(#arrow)"><path d="M315 257H470"/><path d="M315 442C395 442 402 385 470 375"/><path d="M880 247H760"/><path d="M880 447H760"/></g>
+  <path d="M746 394C816 520 930 546 1004 505" fill="none" stroke="#71d2c7" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="590" y="585" text-anchor="middle" fill="#b9c9f5" font-family="-apple-system, sans-serif" font-size="20">SpatialTapGesture는 엔티티 이름을 Planet으로 되돌려 선택 상태를 갱신합니다</text>
+</svg>

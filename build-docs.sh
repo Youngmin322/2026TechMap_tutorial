@@ -13,17 +13,29 @@ OUTPUT_DIR="${OUTPUT_DIR:-docs}"
 BUILD_DIR=".docc-build"
 DERIVED_DATA_DIR="$BUILD_DIR/DerivedData"
 BUILD_LOG="$BUILD_DIR/xcodebuild.log"
+DIAGNOSTICS_FILE="$BUILD_DIR/docc-diagnostics.json"
 
 if [[ ! -d "$CATALOG_PATH" ]]; then
   echo "DocC 카탈로그를 찾을 수 없습니다: $CATALOG_PATH" >&2
   exit 1
 fi
 
-rm -rf "$OUTPUT_DIR" "$BUILD_DIR"
+for directory in "$OUTPUT_DIR" "$BUILD_DIR"; do
+  if [[ -z "$directory" || "$directory" == "/" || "$directory" == "." || "$directory" == ".." ]]; then
+    echo "안전하지 않은 출력 경로입니다: $directory" >&2
+    exit 1
+  fi
+done
+
+if [[ "$OUTPUT_DIR" == "$BUILD_DIR" ]]; then
+  echo "OUTPUT_DIR와 BUILD_DIR는 서로 달라야 합니다." >&2
+  exit 1
+fi
+
+rm -rf -- "$OUTPUT_DIR" "$BUILD_DIR"
 mkdir -p "$OUTPUT_DIR" "$BUILD_DIR"
 
-# Xcode가 심볼 그래프와 타깃 문서를 검사하도록 먼저 DocC 빌드를 실행합니다.
-# 카탈로그를 Xcode 타깃에 추가한 경우 이 단계에서 .doccarchive도 생성됩니다.
+# 튜토리얼의 기반이 되는 visionOS 앱 소스가 컴파일되는지 먼저 확인합니다.
 xcodebuild \
   -project "$PROJECT" \
   -scheme "$SCHEME" \
@@ -31,42 +43,52 @@ xcodebuild \
   -derivedDataPath "$DERIVED_DATA_DIR" \
   docbuild | tee "$BUILD_LOG"
 
-# 튜토리얼 카탈로그를 정적 GitHub Pages 사이트로 변환합니다.
-# fallback 값은 이 카탈로그를 Swift Package와 별도로도 변환할 수 있게 합니다.
+# article과 튜토리얼 카탈로그를 정적 GitHub Pages 사이트로 변환합니다.
+# 깨진 링크, 누락 리소스, 잘못된 지시문은 배포 전에 오류로 처리합니다.
 xcrun docc convert "$CATALOG_PATH" \
   --fallback-display-name "$DISPLAY_NAME" \
   --fallback-bundle-identifier "$BUNDLE_IDENTIFIER" \
   --fallback-bundle-version "1.0.0" \
   --transform-for-static-hosting \
   --hosting-base-path "$HOSTING_BASE_PATH" \
+  --analyze \
+  --warnings-as-errors \
+  --diagnostics-file "$DIAGNOSTICS_FILE" \
   --output-path "$OUTPUT_DIR"
 
 # GitHub Pages가 DocC의 정적 자산을 Jekyll 처리 없이 제공하도록 합니다.
 touch "$OUTPUT_DIR/.nojekyll"
 
-# 존재하지 않는 경로도 DocC 앱으로 되돌립니다.
+if [[ -n "$HOSTING_BASE_PATH" ]]; then
+  SITE_ROOT="/$HOSTING_BASE_PATH/"
+else
+  SITE_ROOT="/"
+fi
+DOCS_HOME="${SITE_ROOT}documentation/solarsystematlas"
+
+# 존재하지 않는 경로도 문서 학습 가이드로 되돌립니다.
 printf '%s\n' \
   '<!doctype html>' \
   '<html lang="ko">' \
   '<head>' \
   '  <meta charset="utf-8">' \
   '  <meta name="viewport" content="width=device-width, initial-scale=1">' \
-  '  <meta http-equiv="refresh" content="0; url=./">' \
+  "  <meta http-equiv=\"refresh\" content=\"0; url=$DOCS_HOME\">" \
   '  <title>SolarSystemAtlas 문서</title>' \
   '</head>' \
-  '<body>문서 홈으로 이동합니다.</body>' \
+  "<body><a href=\"$DOCS_HOME\">문서 홈으로 이동</a></body>" \
   '</html>' > "$OUTPUT_DIR/404.html"
 
-# 저장소 루트로 접속했을 때 튜토리얼 첫 화면으로 이동합니다.
+# 저장소 루트로 접속했을 때 문서 학습 가이드로 이동합니다.
 printf '%s\n' \
   '<!doctype html>' \
   '<html lang="ko">' \
   '<head>' \
   '  <meta charset="utf-8">' \
-  '  <meta http-equiv="refresh" content="0; url=./tutorials/solarsystematlas">' \
-  '  <title>SolarSystemAtlas 튜토리얼</title>' \
+  '  <meta http-equiv="refresh" content="0; url=./documentation/solarsystematlas">' \
+  '  <title>SolarSystemAtlas 문서</title>' \
   '</head>' \
-  '<body><a href="./tutorials/solarsystematlas">튜토리얼 열기</a></body>' \
+  '<body><a href="./documentation/solarsystematlas">문서 열기</a></body>' \
   '</html>' > "$OUTPUT_DIR/index.html"
 
 echo "완료: $OUTPUT_DIR/ 에 GitHub Pages용 DocC 사이트를 만들었습니다."

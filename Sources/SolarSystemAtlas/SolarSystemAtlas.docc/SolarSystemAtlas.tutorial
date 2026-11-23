@@ -4,15 +4,15 @@
 
         평면적인 목록에서 출발해 태양과 행성을 깊이감 있게 배치하고, 회전 애니메이션과 선택 가능한 정보 카드를 더해 나갑니다. SwiftUI는 익숙하지만 visionOS와 공간 컴퓨팅은 처음인 독자를 위한 실습입니다.
 
-        <!-- TODO: 실제 앱의 대표 화면 캡처로 교체하세요. -->
-        @Image(source: "spatial-layout-cover.svg", alt: "태양을 중심으로 행성이 깊이 방향으로 배치된 SolarSystemAtlas의 자리표시자 일러스트레이션")
+        @Image(source: "spatial-layout-cover.svg", alt: "태양을 중심으로 여러 행성이 깊이감 있게 배치된 SolarSystemAtlas 개념도")
+
+        완성 앱의 구조와 파일별 역할을 먼저 보고 싶다면 <doc:SolarSystemAtlas>를 확인하세요.
     }
 
     @Chapter(name: "Spatial Layout 기초 다지기") {
         앱의 폴더 구조를 살펴보고, `depthAlignment`가 왜 3D 배치의 기준점이 되는지 이해합니다. 이어서 태양과 행성을 깊이 축까지 고려해 배치합니다.
 
-        <!-- TODO: 깊이 정렬 전후를 보여 주는 실제 스크린샷으로 교체하세요. -->
-        @Image(source: "spatial-layout-depth.svg", alt: "깊이 축을 따라 앞과 뒤에 놓인 태양계 모델의 자리표시자 일러스트레이션")
+        @Image(source: "spatial-layout-depth.svg", alt: "깊이 축을 따라 뒤, 가운데, 앞에 놓인 행성 개념도")
 
         @TutorialReference(tutorial: "doc:01-SpatialLayoutBasics")
     }
@@ -20,8 +20,7 @@
     @Chapter(name: "태양계 움직이기") {
         행성 데이터에서 공전과 자전에 필요한 값을 꺼내고, `rotation3DLayout`이 레이아웃까지 고려하는 회전을 어떻게 만드는지 실습합니다.
 
-        <!-- TODO: 회전 중인 행성을 보여 주는 실제 스크린샷으로 교체하세요. -->
-        @Image(source: "spatial-layout-rotation.svg", alt: "원형 궤도를 따라 회전하는 행성의 자리표시자 일러스트레이션")
+        @Image(source: "spatial-layout-rotation.svg", alt: "원형 궤도를 따라 공전하며 자전하는 행성 개념도")
 
         @TutorialReference(tutorial: "doc:02-PlanetRotation")
     }
@@ -29,9 +28,16 @@
     @Chapter(name: "행성 정보 인터랙션 만들기") {
         `SpatialContainer`와 `spatialOverlay`를 이용해 선택한 행성 가까이에 정보 카드를 띄우고, 배치·움직임·입력을 하나의 경험으로 연결합니다.
 
-        <!-- TODO: 선택된 행성과 정보 카드를 보여 주는 실제 스크린샷으로 교체하세요. -->
-        @Image(source: "spatial-layout-overlay.svg", alt: "선택된 행성 앞에 정보 카드가 떠 있는 자리표시자 일러스트레이션")
+        @Image(source: "spatial-layout-overlay.svg", alt: "선택된 지구 앞에 정보 카드가 떠 있는 공간 오버레이 개념도")
 
         @TutorialReference(tutorial: "doc:03-PlanetInfoOverlay")
+    }
+
+    @Chapter(name: "RealityKit 장면으로 확장하기") {
+        학습용 Spatial Layout 예제를 실제 앱의 `RealityView` 구조로 옮깁니다. 3D 에셋 크기를 정규화하고, 궤도 엔티티와 레이블 attachment를 만든 뒤, 공간 탭 입력을 연결합니다.
+
+        @Image(source: "realityview-architecture.svg", alt: "SwiftUI 상태가 RealityView의 태양계 엔티티와 정보 카드를 갱신하는 구조도")
+
+        @TutorialReference(tutorial: "doc:04-RealityKitIntegration")
     }
 }
